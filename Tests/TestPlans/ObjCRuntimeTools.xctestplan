@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "D8C8FF5E-EB4F-4C72-BF45-A8DC27B5CCC2",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "SwizzlingTests",
+        "name" : "SwizzlingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "AssociationTests",
+        "name" : "AssociationTests"
+      }
+    }
+  ],
+  "version" : 1
+}

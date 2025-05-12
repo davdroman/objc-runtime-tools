@@ -97,6 +97,45 @@ try #swizzle(setter: \UIView.isHidden, param: Bool.self) { $self, isHidden in
 }
 ```
 
+#### ⚠️ Important: how to swizzle only once ⚠️
+
+It's up to you to ensure that the swizzling is done only once. You can use a static variable to track whether the swizzling has already been performed:
+
+```swift
+class MyClass: NSObject {
+    static var isSwizzled = false
+
+    static func swizzleOnce() throws {
+        guard !MyClass.isSwizzled else { return }
+        MyClass.isSwizzled = true
+
+        try #swizzle(MyClass.doSomething) { $self in
+            print("Before")
+            self.doSomething()
+            print("After")
+        }
+    }
+}
+```
+
+However this is error prone, noisy and not very maintainable, especially if you have multiple swizzling points. Not to mention Swift 6's strict concurrency rules, which will make this approach even more difficult because static variables aren't thread-safe by default.
+
+A better approach is to use a macro such as [`#once`](https://github.com/davdroman/swift-once-macro) which ensures any action is executed only once, regardless of how many times it is called over the lifetime of the app.
+
+```swift
+class MyClass: NSObject {
+    static func swizzleOnce() throws {
+        try #once {
+            try #swizzle(MyClass.doSomething) { $self in
+                print("Before")
+                self.doSomething()
+                print("After")
+            }
+        }
+    }
+}
+```
+
 ## Credits
 
 This library is inspired by and builds upon the following projects:

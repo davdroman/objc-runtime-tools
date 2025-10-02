@@ -31,11 +31,26 @@ jobs:
           - "6.1"
           - "6.2"
     steps:
-      - uses: actions/checkout@v4
-      - uses: mxcl/xcodebuild@v3
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        uses: mxcl/xcodebuild@v3
+        with:
+          swift: ~${{ matrix.swift }}
+          action: none
+          verbosity: xcbeautify
+
+      - if: ${{ matrix.platform != 'macOS' }}
+        name: Download Default Runtime
+        run: xcodebuild -downloadPlatform ${{ matrix.platform }}
+
+      - name: Test Library
+        uses: mxcl/xcodebuild@v3
         with:
           action: test
           platform: ${{ matrix.platform }}
           swift: ~${{ matrix.swift }}
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
+          verbosity: xcbeautify

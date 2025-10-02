@@ -29,13 +29,12 @@ jobs:
         swift:
           - "6.0"
           - "6.1"
-        include:
-          - action: test
+          - "6.2"
     steps:
       - uses: actions/checkout@v4
       - uses: mxcl/xcodebuild@v3
         with:
-          action: ${{ matrix.action }}
+          action: test
           platform: ${{ matrix.platform }}
           swift: ~${{ matrix.swift }}
           workspace: ObjCRuntimeTools.xcworkspace

@@ -27,8 +27,8 @@ jobs:
           - tvOS
           - watchOS
         swift:
-          - "6.0"
-          - "6.1"
+          # - "6.0"
+          # - "6.1"
           - "6.2"
     steps:
       - name: Git Checkout

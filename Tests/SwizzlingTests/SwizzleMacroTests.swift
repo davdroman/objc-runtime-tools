@@ -6,9 +6,9 @@ import Testing
 
 @Suite(
 	.macros(
+		["swizzle": SwizzleMacro.self],
 		indentationWidth: .tab,
-		record: .failed,
-		macros: ["swizzle": SwizzleMacro.self]
+		record: .failed
 	)
 )
 struct SwizzleMacroTests {}

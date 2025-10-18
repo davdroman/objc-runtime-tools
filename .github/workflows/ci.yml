@@ -34,6 +34,9 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v4
 
+      - name: Remove Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
         with:

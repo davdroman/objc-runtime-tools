@@ -31,9 +31,9 @@ import Testing
 
 @Suite(
 	.macros(
+		["Associated": AssociatedMacro.self],
 		indentationWidth: .tab,
-		record: .never,
-		macros: ["Associated": AssociatedMacro.self]
+		record: .never
 	)
 )
 struct AssociatedTests {

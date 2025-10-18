@@ -48,7 +48,6 @@ package.targets += [
 			"Association",
 			"AssociationMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
 ]
@@ -75,7 +74,6 @@ package.targets += [
 			"Swizzling",
 			"SwizzlingMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
 ]

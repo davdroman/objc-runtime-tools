@@ -34,15 +34,15 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v4
 
-      - name: Remove Derived Data
-        run: rm -rf ~/Library/Developer/Xcode/DerivedData
-
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
         with:
           swift: ~${{ matrix.swift }}
           action: none
           verbosity: xcbeautify
+
+      - name: Disable Package Prebuilts
+        run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts NO
 
       - if: ${{ matrix.platform != 'macOS' }}
         name: Download Default Runtime

@@ -26,10 +26,17 @@ jobs:
           - macOS
           - tvOS
           - watchOS
-        swift:
-          - "6.0"
-          - "6.1"
-          - "6.2.0"
+        xcode:
+          - "16.2"
+          - "16.4"
+          - "26.0"
+        include:
+          - xcode: "16.2"
+            swift: "6.0"
+          - xcode: "16.4"
+            swift: "6.1"
+          - xcode: "26.0"
+            swift: "6.2"
     steps:
       - name: Git Checkout
         uses: actions/checkout@v4
@@ -37,7 +44,7 @@ jobs:
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
         with:
-          swift: ^${{ matrix.swift }}
+          xcode: ~${{ matrix.xcode }}
           action: none
           verbosity: xcbeautify
 
@@ -50,7 +57,7 @@ jobs:
         with:
           action: test
           platform: ${{ matrix.platform }}
-          swift: ~${{ matrix.swift }}
+          xcode: ~${{ matrix.xcode }}
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

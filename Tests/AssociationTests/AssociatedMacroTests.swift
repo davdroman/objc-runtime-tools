@@ -20,7 +20,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-#if os(macOS) // NB: can only test macros on macOS
+#if canImport(AssociationMacro)
 import MacroTesting
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
@@ -31,9 +31,9 @@ import Testing
 
 @Suite(
 	.macros(
+		["Associated": AssociatedMacro.self],
 		indentationWidth: .tab,
-		record: .never,
-		macros: ["Associated": AssociatedMacro.self]
+		record: .never
 	)
 )
 struct AssociatedTests {

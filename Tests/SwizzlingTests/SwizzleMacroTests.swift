@@ -1,4 +1,4 @@
-#if os(macOS) // NB: can only test macros on macOS
+#if canImport(SwizzlingMacro)
 import MacroTesting
 import Swizzling
 import SwizzlingMacro
@@ -6,9 +6,9 @@ import Testing
 
 @Suite(
 	.macros(
+		["swizzle": SwizzleMacro.self],
 		indentationWidth: .tab,
-		record: .failed,
-		macros: ["swizzle": SwizzleMacro.self]
+		record: .failed
 	)
 )
 struct SwizzleMacroTests {}

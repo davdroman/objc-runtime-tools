@@ -26,17 +26,41 @@ jobs:
           - macOS
           - tvOS
           - watchOS
-        swift:
-          - "6.0"
-          - "6.1"
+        xcode:
+          - "16.2"
+          - "16.4"
+          - "26.0"
         include:
-          - action: test
+          - xcode: "16.2"
+            swift: "6.0"
+          - xcode: "16.4"
+            swift: "6.1"
+          - xcode: "26.0"
+            swift: "6.2"
     steps:
-      - uses: actions/checkout@v4
-      - uses: mxcl/xcodebuild@v3
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        uses: mxcl/xcodebuild@v3
         with:
-          action: ${{ matrix.action }}
+          xcode: ~${{ matrix.xcode }}
+          action: none
+          verbosity: xcbeautify
+
+      - name: Remove Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - if: ${{ matrix.platform != 'macOS' }}
+        name: Download Default Runtime
+        run: xcodebuild -downloadPlatform ${{ matrix.platform }}
+
+      - name: Test Library
+        uses: mxcl/xcodebuild@v3
+        with:
+          action: test
           platform: ${{ matrix.platform }}
-          swift: ~${{ matrix.swift }}
+          xcode: ~${{ matrix.xcode }}
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
+          verbosity: xcbeautify

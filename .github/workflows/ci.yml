@@ -48,6 +48,9 @@ jobs:
           action: none
           verbosity: xcbeautify
 
+      - name: Remove Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
       - if: ${{ matrix.platform != 'macOS' }}
         name: Download Default Runtime
         run: xcodebuild -downloadPlatform ${{ matrix.platform }}

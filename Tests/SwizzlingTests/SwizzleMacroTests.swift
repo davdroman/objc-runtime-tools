@@ -1,4 +1,4 @@
-#if os(macOS)
+#if canImport(SwizzlingMacro)
 import MacroTesting
 import Swizzling
 import SwizzlingMacro

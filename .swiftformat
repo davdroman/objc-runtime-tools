@@ -1,6 +1,15 @@
---disable redundantNilInit,redundantSelf,redundantType,redundantBackticks,unusedArguments,extensionAccessControl,hoistPatternLet,redundantLetError
-
 --header ignore
 --indent tab
 --ifdef no-indent
 --ranges preserve
+
+# disabled
+
+--disable redundantNilInit
+--disable redundantSelf
+--disable redundantType
+--disable redundantBackticks
+--disable unusedArguments
+--disable extensionAccessControl
+--disable hoistPatternLet
+--disable redundantLetError

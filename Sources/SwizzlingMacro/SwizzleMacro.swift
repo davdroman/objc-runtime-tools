@@ -75,7 +75,7 @@ struct SwizzleMacro: ExpressionMacro {
 }
 
 final class FirstClosureParameterFinder: SyntaxVisitor {
-	private(set) var paramName: String?
+	private(set) var paramName: String? = nil
 
 	init() {
 		super.init(viewMode: .sourceAccurate)

@@ -15,6 +15,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  Lint:
+    runs-on: macos-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v5
+
+      - name: Install SwiftFormat
+        uses: pkgxdev/setup@v4
+        with:
+          +: swiftformat@latest
+
+      - name: SwiftFormat Lint
+        run: swiftformat --lint . --reporter github-actions-log
   macOS:
     name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
     runs-on: macos-15

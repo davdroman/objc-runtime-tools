@@ -34,10 +34,10 @@ public class AnyHook {
 	public internal(set) var state = State.prepared
 
 	// else we validate init order
-	var replacementIMP: IMP!
+	var replacementIMP: IMP! = nil
 
 	// fetched at apply time, changes late, thus class requirement
-	var origIMP: IMP?
+	var origIMP: IMP? = nil
 
 	/// The possible task states
 	public enum State: Equatable, Sendable {

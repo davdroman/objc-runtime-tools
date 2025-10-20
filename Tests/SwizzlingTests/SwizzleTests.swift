@@ -154,7 +154,7 @@ struct SwizzleLifetimeTests {
 		@objc dynamic var state: Int = 0
 	}
 
-	weak static var hook: AnyHook?
+	weak static var hook: AnyHook? = nil
 
 	@Test
 	func swizzlePersistsAcrossScopes_entryPoint() throws {

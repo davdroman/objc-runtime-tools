@@ -30,7 +30,7 @@ import Testing
 	.macros(
 		["Associated": AssociatedMacro.self],
 		indentationWidth: .tab,
-		record: .never
+		record: .missing
 	)
 )
 struct AssociatedTests {

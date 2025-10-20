@@ -9,7 +9,7 @@ import Testing
 	.macros(
 		["swizzle": SwizzleMacro.self],
 		indentationWidth: .tab,
-		record: .failed
+		record: .missing
 	)
 )
 struct SwizzleMacroTests {}

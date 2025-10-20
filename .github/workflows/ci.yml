@@ -57,9 +57,9 @@ jobs:
       - name: Test Library
         uses: mxcl/xcodebuild@v3
         with:
-          action: test
           platform: ${{ matrix.platform }}
           swift: ~${{ matrix.swift }}
+          action: test
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

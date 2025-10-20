@@ -1,6 +1,5 @@
 #if canImport(SwizzlingMacro)
 import MacroTesting
-import Swizzling
 import Testing
 
 @testable import SwizzlingMacro

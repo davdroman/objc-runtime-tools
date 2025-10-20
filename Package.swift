@@ -33,29 +33,22 @@ package.products += [
 
 package.targets += [
 	.target(name: "Association", dependencies: ["AssociationMacro"]),
-	.testTarget(
-		name: "AssociationTests",
-		dependencies: [
-			"Association",
-		]
-	),
-
 	.macro(
 		name: "AssociationMacro",
 		dependencies: [
-			.product(name: "SwiftSyntax", package: "swift-syntax"),
-			.product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
+
 	.testTarget(
-		name: "AssociationMacroTests",
+		name: "AssociationTests",
 		dependencies: [
+			"Association",
 			"AssociationMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
 		]
-	)
+	),
 ]
 
 // MARK: Swizzling
@@ -69,8 +62,6 @@ package.targets += [
 	.macro(
 		name: "SwizzlingMacro",
 		dependencies: [
-			.product(name: "SwiftSyntax", package: "swift-syntax"),
-			.product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
@@ -82,7 +73,6 @@ package.targets += [
 			"Swizzling",
 			"SwizzlingMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
 ]

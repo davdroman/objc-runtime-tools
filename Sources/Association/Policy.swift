@@ -20,7 +20,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import ObjectiveC.runtime
+public import ObjectiveC.runtime
 
 // A typealias for `objc_AssociationPolicy`.
 public typealias Policy = objc_AssociationPolicy

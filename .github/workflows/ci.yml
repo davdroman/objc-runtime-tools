@@ -26,13 +26,19 @@ jobs:
           - macOS
           - tvOS
           - watchOS
+          - visionOS
         swift:
           - "6.0"
           - "6.1"
           - "6.2"
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Force disable SwiftSyntax Prebuilts
+        run: |
+          mkdir -p ~/.swiftpm/cache/prebuilts
+          touch ~/.swiftpm/cache/prebuilts/noprebuilts
 
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
@@ -40,12 +46,6 @@ jobs:
           swift: ~${{ matrix.swift }}
           action: none
           verbosity: xcbeautify
-
-      - name: Force disable SwiftSyntax Prebuilts
-        if: false
-        run: |
-          mkdir -p ~/.swiftpm/cache/prebuilts
-          touch ~/.swiftpm/cache/prebuilts/noprebuilts
 
       - if: ${{ matrix.platform != 'macOS' }}
         name: Download Default Runtime

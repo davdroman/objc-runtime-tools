@@ -391,9 +391,7 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										expression: DeclReferenceExprSyntax(
-											baseName: .keyword(.`self`)
-										)
+										name: .keyword(.`self`)
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
@@ -449,9 +447,7 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										expression: DeclReferenceExprSyntax(
-											baseName: .keyword(.`self`)
-										)
+										name: .keyword(.`self`)
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {

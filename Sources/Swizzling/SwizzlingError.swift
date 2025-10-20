@@ -99,3 +99,5 @@ extension SwizzlingError: Equatable {
 		return self
 	}
 }
+
+extension SwizzlingError: @unchecked Sendable {}

@@ -40,7 +40,7 @@ public class AnyHook {
 	var origIMP: IMP?
 
 	/// The possible task states
-	public enum State: Equatable {
+	public enum State: Equatable, Sendable {
 		/// The task is prepared to be swizzled.
 		case prepared
 

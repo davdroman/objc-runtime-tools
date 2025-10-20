@@ -22,8 +22,7 @@ let package = Package(
 				"Swizzling",
 			]
 		),
-	],
-	swiftLanguageModes: [.v5] // disable strict concurrency checks for now
+	]
 )
 
 // MARK: Association

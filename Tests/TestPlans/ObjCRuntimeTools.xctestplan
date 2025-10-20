@@ -23,13 +23,6 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "AssociationMacroTests",
-        "name" : "AssociationMacroTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:",
         "identifier" : "SwizzlingTests",
         "name" : "SwizzlingTests"
       }

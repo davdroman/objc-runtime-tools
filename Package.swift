@@ -33,6 +33,13 @@ package.products += [
 
 package.targets += [
 	.target(name: "Association", dependencies: ["AssociationMacro"]),
+	.testTarget(
+		name: "AssociationTests",
+		dependencies: [
+			"Association",
+		]
+	),
+
 	.macro(
 		name: "AssociationMacro",
 		dependencies: [
@@ -42,16 +49,13 @@ package.targets += [
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
-
 	.testTarget(
-		name: "AssociationTests",
+		name: "AssociationMacroTests",
 		dependencies: [
-			"Association",
 			"AssociationMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
-	),
+	)
 ]
 
 // MARK: Swizzling

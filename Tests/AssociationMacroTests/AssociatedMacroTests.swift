@@ -35,7 +35,7 @@ import Testing
 )
 struct AssociatedTests {
 	@Test
-	func testString() throws {
+	func string() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.atomic))
@@ -81,7 +81,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testInt() throws {
+	func int() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -127,7 +127,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testFloat() throws {
+	func float() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -173,7 +173,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDouble() throws {
+	func double() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -219,7 +219,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testStringWithOtherPolicy() throws {
+	func stringWithOtherPolicy() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -265,7 +265,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testOptionalString() throws {
+	func optionalString() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -301,7 +301,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testOptionalGenericsString() throws {
+	func optionalGenericsString() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -337,7 +337,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testImplicitlyUnwrappedOptionalString() throws {
+	func implicitlyUnwrappedOptionalString() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -373,7 +373,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testOptionalStringWithInitialValue() throws {
+	func optionalStringWithInitialValue() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -429,7 +429,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testBool() throws {
+	func bool() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -475,7 +475,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testIntArray() throws {
+	func intArray() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -521,7 +521,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testOptionalBool() throws {
+	func optionalBool() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -557,7 +557,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDictionary() throws {
+	func dictionary() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -603,7 +603,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testWillSet() throws {
+	func willSet() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -665,7 +665,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDidSet() throws {
+	func didSet() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -725,7 +725,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testWillSetAndDidSet() throws {
+	func willSetAndDidSet() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -799,7 +799,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testWillSetWithArgument() throws {
+	func willSetWithArgument() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -861,7 +861,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDidSetWithArgument() throws {
+	func didSetWithArgument() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -921,7 +921,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testModernWritingStyle() throws {
+	func modernWritingStyle() throws {
 		assertMacro {
 			"""
 			@Associated(.copy(.nonatomic))
@@ -969,7 +969,7 @@ struct AssociatedTests {
 	// MARK: Diagnostics test
 
 	@Test
-	func testDiagnosticsDeclarationType() throws {
+	func diagnosticsDeclarationType() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -985,7 +985,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDiagnosticsGetterAndSetter() throws {
+	func diagnosticsGetterAndSetter() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -1008,7 +1008,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDiagnosticsInitialValue() throws {
+	func diagnosticsInitialValue() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -1024,7 +1024,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func testDiagnosticsSpecifyType() throws {
+	func diagnosticsSpecifyType() throws {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))

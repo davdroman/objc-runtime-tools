@@ -46,7 +46,7 @@ class ClassType {
 	@Suite
 	struct Tests {
 		@Test
-		func testKeysUnique() {
+		func keysUnique() {
 			let keys = [
 				ClassType.__associated_intKey,
 				ClassType.__associated_optionalDoubleKey,
@@ -59,7 +59,7 @@ class ClassType {
 		}
 
 		@Test
-		func testAssignments() {
+		func assignments() {
 			let item = ClassType()
 			#expect(item.int == 0)
 			#expect(item.optionalDouble == 123.4)
@@ -99,7 +99,7 @@ class ClassType {
 		}
 
 		@Test
-		func testOptional() {
+		func optional() {
 			let item = ClassType()
 			#expect(item.optionalDouble == 123.4)
 
@@ -117,7 +117,7 @@ class ClassType {
 		}
 
 		@Test
-		func testSetDefaultValue() {
+		func setDefaultValue() {
 			let item = ClassType()
 			#expect(item.classType === item.classType)
 		}

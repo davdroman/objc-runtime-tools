@@ -74,7 +74,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testSetSetter() {
+	func setSetter() {
 		let setter = AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -109,7 +109,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testSetGetter() {
+	func setGetter() {
 		let getter = AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: CodeBlockItemListSyntax {}))
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -190,7 +190,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testSetWillSet() {
+	func setWillSet() {
 		let `willSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.willSet), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		var binding: PatternBindingSyntax = .init(

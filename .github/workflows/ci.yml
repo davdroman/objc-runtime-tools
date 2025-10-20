@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v5
+
+      - name: Install SwiftFormat
+        uses: pkgxdev/setup@v4
+        with:
+          +: swiftformat@latest
+
       - name: SwiftFormat Lint
         run: swiftformat --lint . --reporter github-actions-log
   macOS:

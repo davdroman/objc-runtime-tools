@@ -1,8 +1,9 @@
 #if canImport(SwizzlingMacro)
 import MacroTesting
 import Swizzling
-import SwizzlingMacro
 import Testing
+
+@testable import SwizzlingMacro
 
 @Suite(
 	.macros(

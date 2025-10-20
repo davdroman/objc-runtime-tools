@@ -71,25 +71,25 @@ extension SwizzlingError: Equatable {
 
 	public var errorDescription: String? {
 		switch self {
-		case .methodNotFound(let klass, let selector):
+		case let .methodNotFound(klass, selector):
 			"Method not found: -[\(klass) \(selector)]"
-		case .nonExistingImplementation(let klass, let selector):
+		case let .nonExistingImplementation(klass, selector):
 			"Implementation not found: -[\(klass) \(selector)]"
-		case .unexpectedImplementation(let klass, let selector, let IMP):
+		case let .unexpectedImplementation(klass, selector, IMP):
 			"Unexpected Implementation in -[\(klass) \(selector)]: \(String(describing: IMP))"
-		case .failedToAllocateClassPair(let klass, let subclassName):
+		case let .failedToAllocateClassPair(klass, subclassName):
 			"Failed to allocate class pair: \(klass), \(subclassName)"
-		case .unableToAddMethod(let klass, let selector):
+		case let .unableToAddMethod(klass, selector):
 			"Unable to add method: -[\(klass) \(selector)]"
-		case .keyValueObservationDetected(let obj):
+		case let .keyValueObservationDetected(obj):
 			"Unable to hook object that uses Key Value Observing: \(obj)"
-		case .objectPosingAsDifferentClass(let obj, let actualClass):
+		case let .objectPosingAsDifferentClass(obj, actualClass):
 			"Unable to hook \(type(of: obj)) posing as \(NSStringFromClass(actualClass))/"
-		case .invalidState(let expectedState):
+		case let .invalidState(expectedState):
 			"Invalid State. Expected: \(expectedState)"
-		case .resetUnsupported(let reason):
+		case let .resetUnsupported(reason):
 			"Reset Unsupported: \(reason)"
-		case .unknownError(let reason):
+		case let .unknownError(reason):
 			reason
 		}
 	}

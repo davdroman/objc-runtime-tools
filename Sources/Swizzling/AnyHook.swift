@@ -37,7 +37,7 @@ public class AnyHook {
 	var replacementIMP: IMP!
 
 	// fetched at apply time, changes late, thus class requirement
-	var origIMP: IMP?
+	var origIMP: IMP? = nil
 
 	/// The possible task states
 	public enum State: Equatable, Sendable {

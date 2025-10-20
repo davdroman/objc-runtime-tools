@@ -42,6 +42,7 @@ jobs:
           verbosity: xcbeautify
 
       - name: Force disable SwiftSyntax Prebuilts
+        if: false
         run: |
           mkdir -p ~/.swiftpm/cache/prebuilts
           touch ~/.swiftpm/cache/prebuilts/noprebuilts

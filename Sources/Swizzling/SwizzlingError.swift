@@ -20,7 +20,7 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 
-import Foundation
+public import Foundation
 
 /// The list of errors while hooking a method.
 public enum SwizzlingError: LocalizedError {
@@ -99,3 +99,5 @@ extension SwizzlingError: Equatable {
 		return self
 	}
 }
+
+extension SwizzlingError: @unchecked Sendable {}

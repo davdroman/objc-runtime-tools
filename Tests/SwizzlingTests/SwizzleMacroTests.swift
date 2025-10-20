@@ -1,14 +1,14 @@
 #if canImport(SwizzlingMacro)
 import MacroTesting
-import Swizzling
-import SwizzlingMacro
 import Testing
+
+@testable import SwizzlingMacro
 
 @Suite(
 	.macros(
 		["swizzle": SwizzleMacro.self],
 		indentationWidth: .tab,
-		record: .failed
+		record: .missing
 	)
 )
 struct SwizzleMacroTests {}

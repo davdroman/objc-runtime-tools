@@ -25,7 +25,7 @@ import SwiftSyntaxMacros
 
 @main
 struct AssociatedMacrosPlugin: CompilerPlugin {
-	let providingMacros: [Macro.Type] = [
+	let providingMacros: [any Macro.Type] = [
 		AssociatedMacro.self,
 	]
 }

@@ -16,15 +16,15 @@
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "SwizzlingTests",
-        "name" : "SwizzlingTests"
+        "identifier" : "AssociationTests",
+        "name" : "AssociationTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:",
-        "identifier" : "AssociationTests",
-        "name" : "AssociationTests"
+        "identifier" : "SwizzlingTests",
+        "name" : "SwizzlingTests"
       }
     }
   ],

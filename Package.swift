@@ -7,8 +7,10 @@ let package = Package(
 	name: "objc-runtime-tools",
 	platforms: [
 		.iOS(.v13),
+		.macCatalyst(.v13),
 		.macOS(.v10_15),
 		.tvOS(.v13),
+		.visionOS(.v1),
 		.watchOS(.v6),
 	],
 	products: [
@@ -22,8 +24,7 @@ let package = Package(
 				"Swizzling",
 			]
 		),
-	],
-	swiftLanguageModes: [.v5] // disable strict concurrency checks for now
+	]
 )
 
 // MARK: Association
@@ -37,8 +38,6 @@ package.targets += [
 	.macro(
 		name: "AssociationMacro",
 		dependencies: [
-			.product(name: "SwiftSyntax", package: "swift-syntax"),
-			.product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
@@ -50,7 +49,6 @@ package.targets += [
 			"Association",
 			"AssociationMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
 ]
@@ -66,8 +64,6 @@ package.targets += [
 	.macro(
 		name: "SwizzlingMacro",
 		dependencies: [
-			.product(name: "SwiftSyntax", package: "swift-syntax"),
-			.product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
@@ -79,7 +75,6 @@ package.targets += [
 			"Swizzling",
 			"SwizzlingMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
 		]
 	),
 ]
@@ -88,3 +83,11 @@ package.dependencies += [
 	.package(url: "https://github.com/pointfreeco/swift-macro-testing", from: "0.6.0"),
 	.package(url: "https://github.com/swiftlang/swift-syntax", "600.0.0"..<"603.0.0"),
 ]
+
+for target in package.targets {
+	target.swiftSettings = target.swiftSettings ?? []
+	target.swiftSettings? += [
+		.enableUpcomingFeature("ExistentialAny"),
+		.enableUpcomingFeature("InternalImportsByDefault"),
+	]
+}

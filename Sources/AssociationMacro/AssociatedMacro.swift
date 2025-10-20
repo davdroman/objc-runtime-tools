@@ -24,10 +24,10 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct AssociatedMacro {}
+struct AssociatedMacro {}
 
 extension AssociatedMacro: PeerMacro {
-	public static func expansion(
+	static func expansion(
 		of node: AttributeSyntax,
 		providingPeersOf declaration: some DeclSyntaxProtocol,
 		in context: some MacroExpansionContext
@@ -121,7 +121,7 @@ extension AssociatedMacro: PeerMacro {
 }
 
 extension AssociatedMacro: AccessorMacro {
-	public static func expansion(
+	static func expansion(
 		of node: AttributeSyntax,
 		providingAccessorsOf declaration: some DeclSyntaxProtocol,
 		in context: some MacroExpansionContext
@@ -391,9 +391,7 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										expression: DeclReferenceExprSyntax(
-											baseName: .keyword(.`self`)
-										)
+										name: .keyword(.`self`)
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
@@ -449,9 +447,7 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										expression: DeclReferenceExprSyntax(
-											baseName: .keyword(.`self`)
-										)
+										name: .keyword(.`self`)
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {

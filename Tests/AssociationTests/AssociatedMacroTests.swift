@@ -22,18 +22,15 @@
 
 #if canImport(AssociationMacro)
 import MacroTesting
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
 import Testing
 
-@testable import Association
 @testable import AssociationMacro
 
 @Suite(
 	.macros(
 		["Associated": AssociatedMacro.self],
 		indentationWidth: .tab,
-		record: .never
+		record: .missing
 	)
 )
 struct AssociatedTests {

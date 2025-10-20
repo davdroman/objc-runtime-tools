@@ -23,7 +23,7 @@
 import SwiftDiagnostics
 import SwiftSyntax
 
-public enum AssociatedMacroDiagnostic {
+enum AssociatedMacroDiagnostic {
 	case requiresVariableDeclaration
 	case multipleVariableDeclarationIsNotSupported
 	case getterAndSetterShouldBeNil

@@ -147,6 +147,7 @@ extension SwizzleTests {
 	}
 }
 
+@MainActor
 @Suite(.serialized)
 struct SwizzleLifetimeTests {
 	final class SUT: NSObject {

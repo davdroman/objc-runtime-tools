@@ -22,11 +22,33 @@
 
 import Foundation
 
+private final class Atomic<Value> {
+	private let lock = NSLock()
+	private var value: Value
+
+	init(_ value: Value) {
+		self.value = value
+	}
+
+	func withLock<R>(_ body: (inout Value) throws -> R) rethrows -> R {
+		lock.lock()
+		defer { lock.unlock() }
+		return try body(&value)
+	}
+}
+
+extension Atomic: @unchecked Sendable where Value: Sendable {}
+
 // MARK: Logging
 
 public enum Swizzling {
-	/// Logging uses print and is minimal.
-	public static var isLoggingEnabled = false
+	private static let loggingState = Atomic(false)
+
+	/// Logging uses print and is minimal. Stored in a lock to keep writes concurrency-safe.
+	public static var isLoggingEnabled: Bool {
+		get { loggingState.withLock { $0 } }
+		set { loggingState.withLock { $0 = newValue } }
+	}
 
 	/// Simple log wrapper for print.
 	static func log(_ object: Any) {

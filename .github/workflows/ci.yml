@@ -26,30 +26,30 @@ jobs:
           - macOS
           - tvOS
           - watchOS
-        xcode:
-          - "16.2"
-          - "16.4"
-          - "26.0"
-        include:
-          - xcode: "16.2"
-            swift: "6.0"
-          - xcode: "16.4"
-            swift: "6.1"
-          - xcode: "26.0"
-            swift: "6.2"
+          - visionOS
+        swift:
+          - "6.0"
+          - "6.1"
+          - "6.2"
     steps:
       - name: Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Disable SwiftSyntax Prebuilts
+        run: |
+          defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts -bool NO
+
+          # nuke cache to ensure it takes effect
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          rm -rf ~/Library/Developer/Xcode/SourcePackages
+          rm -rf ~/Library/Caches/org.swift.swiftpm
 
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
         with:
-          xcode: ~${{ matrix.xcode }}
+          swift: ~${{ matrix.swift }}
           action: none
           verbosity: xcbeautify
-
-      - name: Remove Derived Data
-        run: rm -rf ~/Library/Developer/Xcode/DerivedData
 
       - if: ${{ matrix.platform != 'macOS' }}
         name: Download Default Runtime
@@ -58,9 +58,9 @@ jobs:
       - name: Test Library
         uses: mxcl/xcodebuild@v3
         with:
-          action: test
           platform: ${{ matrix.platform }}
-          xcode: ~${{ matrix.xcode }}
+          swift: ~${{ matrix.swift }}
+          action: test
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

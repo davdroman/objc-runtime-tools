@@ -37,7 +37,7 @@ extension AssociatedMacroDiagnostic: DiagnosticMessage {
 		Diagnostic(node: Syntax(node), message: self)
 	}
 
-	public var message: String {
+	var message: String {
 		switch self {
 		case .requiresVariableDeclaration:
 			"`@Associated` must be attached to the property declaration."
@@ -56,9 +56,9 @@ extension AssociatedMacroDiagnostic: DiagnosticMessage {
 		}
 	}
 
-	public var severity: DiagnosticSeverity { .error }
+	var severity: DiagnosticSeverity { .error }
 
-	public var diagnosticID: MessageID {
+	var diagnosticID: MessageID {
 		MessageID(domain: "Swift", id: "Associated.\(self)")
 	}
 }

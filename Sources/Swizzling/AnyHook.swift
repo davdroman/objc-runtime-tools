@@ -20,7 +20,7 @@
 /// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 /// SOFTWARE.
 
-import Foundation
+public import Foundation
 
 /// Base class, represents a hook to exactly one method.
 public class AnyHook {

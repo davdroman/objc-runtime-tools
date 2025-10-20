@@ -3,7 +3,7 @@ import SwiftSyntaxMacros
 
 @main
 struct SwizzleMacrosPlugin: CompilerPlugin {
-	let providingMacros: [Macro.Type] = [
+	let providingMacros: [any Macro.Type] = [
 		SwizzleMacro.self,
 	]
 }

@@ -26,17 +26,10 @@ jobs:
           - macOS
           - tvOS
           - watchOS
-        xcode:
-          - "16.2"
-          - "16.4"
-          - "26.0"
-        include:
-          - xcode: "16.2"
-            swift: "6.0"
-          - xcode: "16.4"
-            swift: "6.1"
-          - xcode: "26.0"
-            swift: "6.2"
+        swift:
+          - "6.0"
+          - "6.1"
+          - "6.2"
     steps:
       - name: Git Checkout
         uses: actions/checkout@v4
@@ -44,15 +37,15 @@ jobs:
       - name: Select Xcode version
         uses: mxcl/xcodebuild@v3
         with:
-          xcode: ~${{ matrix.xcode }}
+          swift: ~${{ matrix.swift }}
           action: none
           verbosity: xcbeautify
 
-      - name: Disable SwiftSyntax prebuilts
-        run: defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts -bool NO
-
-      - name: Clean caches
+      - name: Disable SwiftSyntax Prebuilts
         run: |
+          defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts -bool NO
+
+          # clean caches to ensure prebuilts are not used
           rm -rf ~/Library/Developer/Xcode/DerivedData
           rm -rf ~/Library/Developer/Xcode/SourcePackages
           rm -rf ~/Library/Caches/org.swift.swiftpm
@@ -66,7 +59,7 @@ jobs:
         with:
           action: test
           platform: ${{ matrix.platform }}
-          xcode: ~${{ matrix.xcode }}
+          swift: ~${{ matrix.swift }}
           workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

@@ -29,6 +29,7 @@ jobs:
       - name: SwiftFormat Lint
         run: swiftformat --lint . --reporter github-actions-log
   macOS:
+    if: github.event_name != 'pull_request' || !contains(github.event.pull_request.title, '[skip ci]')
     name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
     runs-on: macos-15
     strategy:
@@ -56,11 +57,11 @@ jobs:
           action: none
           verbosity: xcbeautify
 
-      - if: ${{ matrix.platform != 'macOS' }}
+      - if: ${{ matrix.platform != 'macOS' && matrix.platform != 'mac-catalyst' }}
         name: Download Default Runtime
         run: xcodebuild -downloadPlatform ${{ matrix.platform }}
 
-      - name: Test Library
+      - name: Run Tests
         uses: mxcl/xcodebuild@v3
         with:
           platform: ${{ matrix.platform }}

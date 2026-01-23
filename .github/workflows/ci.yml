@@ -28,7 +28,7 @@ jobs:
 
       - name: SwiftFormat Lint
         run: swiftformat --lint . --reporter github-actions-log
-  macOS:
+  apple:
     if: github.event_name != 'pull_request' || !contains(github.event.pull_request.title, '[skip ci]')
     name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
     runs-on: macos-15
@@ -67,6 +67,5 @@ jobs:
           platform: ${{ matrix.platform }}
           swift: ~${{ matrix.swift }}
           action: test
-          workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

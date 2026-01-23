@@ -57,6 +57,12 @@ jobs:
           action: none
           verbosity: xcbeautify
 
+      - name: Reset cache for SwiftSyntax Prebuilts
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          rm -rf ~/Library/Developer/Xcode/SourcePackages
+          rm -rf ~/Library/Caches/org.swift.swiftpm
+
       - if: ${{ matrix.platform != 'macOS' && matrix.platform != 'mac-catalyst' }}
         name: Download Default Runtime
         run: xcodebuild -downloadPlatform ${{ matrix.platform }}

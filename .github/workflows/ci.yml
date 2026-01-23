@@ -67,6 +67,10 @@ jobs:
           rm -rf ~/Library/Caches/org.swift.swiftpm
 
       - if: ${{ matrix.platform != 'macOS' && matrix.platform != 'mac-catalyst' }}
+        name: Initialize Simulator Service
+        run: xcrun simctl list
+
+      - if: ${{ matrix.platform != 'macOS' && matrix.platform != 'mac-catalyst' }}
         name: Download Default Runtime
         uses: nick-fields/retry@v3
         with:
@@ -82,3 +86,17 @@ jobs:
           action: test
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify
+
+  check-swift-syntax-compatibility:
+    name: Swift Syntax Compatibility Check
+    runs-on: macos-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v5
+
+      - name: Run Swift Syntax Compatibility Check
+        uses: davdroman/swift-macro-compatibility-check@from-version
+        with:
+          run-tests: false
+          from-version: "600.0.0"
+          major-versions-only: true

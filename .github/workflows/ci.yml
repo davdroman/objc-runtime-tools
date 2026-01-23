@@ -28,7 +28,8 @@ jobs:
 
       - name: SwiftFormat Lint
         run: swiftformat --lint . --reporter github-actions-log
-  macOS:
+  apple:
+    if: github.event_name != 'pull_request' || !contains(github.event.pull_request.title, '[skip ci]')
     name: ${{ matrix.platform }} (Swift ${{ matrix.swift }})
     runs-on: macos-15
     strategy:
@@ -36,6 +37,7 @@ jobs:
       matrix:
         platform:
           - iOS
+          - mac-catalyst
           - macOS
           - tvOS
           - watchOS
@@ -48,6 +50,13 @@ jobs:
       - name: Git Checkout
         uses: actions/checkout@v5
 
+      - name: Select Xcode version
+        uses: mxcl/xcodebuild@v3
+        with:
+          swift: ~${{ matrix.swift }}
+          action: none
+          verbosity: xcbeautify
+
       - name: Disable SwiftSyntax Prebuilts
         run: |
           defaults write com.apple.dt.Xcode IDEPackageEnablePrebuilts -bool NO
@@ -57,23 +66,15 @@ jobs:
           rm -rf ~/Library/Developer/Xcode/SourcePackages
           rm -rf ~/Library/Caches/org.swift.swiftpm
 
-      - name: Select Xcode version
-        uses: mxcl/xcodebuild@v3
-        with:
-          swift: ~${{ matrix.swift }}
-          action: none
-          verbosity: xcbeautify
-
-      - if: ${{ matrix.platform != 'macOS' }}
+      - if: ${{ matrix.platform != 'macOS' && matrix.platform != 'mac-catalyst' }}
         name: Download Default Runtime
         run: xcodebuild -downloadPlatform ${{ matrix.platform }}
 
-      - name: Test Library
+      - name: Run Tests
         uses: mxcl/xcodebuild@v3
         with:
           platform: ${{ matrix.platform }}
           swift: ~${{ matrix.swift }}
           action: test
-          workspace: ObjCRuntimeTools.xcworkspace
           scheme: ObjCRuntimeTools
           verbosity: xcbeautify

@@ -26,8 +26,9 @@ import SwiftSyntax
 extension PatternBindingSyntax {
 	var setter: AccessorDeclSyntax? {
 		get {
-			guard let accessors = accessorBlock?.accessors,
-			      case let .accessors(list) = accessors
+			guard
+				let accessors = accessorBlock?.accessors,
+				case let .accessors(list) = accessors
 			else {
 				return nil
 			}
@@ -80,8 +81,9 @@ extension PatternBindingSyntax {
 				let accessor = list.first(where: { accessor in
 					accessor.accessorSpecifier.tokenKind == .keyword(.get)
 				})
-				if let accessor,
-				   let index = list.index(of: accessor)
+				if
+					let accessor,
+					let index = list.index(of: accessor)
 				{
 					if let newValue {
 						newList[index] = newValue
@@ -106,9 +108,10 @@ extension PatternBindingSyntax {
 		if initializer != nil {
 			return false
 		}
-		if let accessors = accessorBlock?.accessors,
-		   case let .accessors(list) = accessors,
-		   list.contains(where: { $0.accessorSpecifier.tokenKind == .keyword(.set) })
+		if
+			let accessors = accessorBlock?.accessors,
+			case let .accessors(list) = accessors,
+			list.contains(where: { $0.accessorSpecifier.tokenKind == .keyword(.set) })
 		{
 			return false
 		}
@@ -122,8 +125,9 @@ extension PatternBindingSyntax {
 extension PatternBindingSyntax {
 	var willSet: AccessorDeclSyntax? {
 		get {
-			if let accessors = accessorBlock?.accessors,
-			   case let .accessors(list) = accessors
+			if
+				let accessors = accessorBlock?.accessors,
+				case let .accessors(list) = accessors
 			{
 				return list.first(where: {
 					$0.accessorSpecifier.tokenKind == .keyword(.willSet)
@@ -139,8 +143,9 @@ extension PatternBindingSyntax {
 
 	var didSet: AccessorDeclSyntax? {
 		get {
-			if let accessors = accessorBlock?.accessors,
-			   case let .accessors(list) = accessors
+			if
+				let accessors = accessorBlock?.accessors,
+				case let .accessors(list) = accessors
 			{
 				return list.first(where: {
 					$0.accessorSpecifier.tokenKind == .keyword(.didSet)
@@ -174,8 +179,9 @@ extension PatternBindingSyntax {
 			let accessor = list.first(where: { accessor in
 				accessor.accessorSpecifier.tokenKind == kind
 			})
-			if let accessor,
-			   let index = list.index(of: accessor)
+			if
+				let accessor,
+				let index = list.index(of: accessor)
 			{
 				if let newValue {
 					newList[index] = newValue

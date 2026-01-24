@@ -176,8 +176,9 @@ extension AssociatedMacro: AccessorMacro {
 		}
 
 		var policy: ExprSyntax = ".retain(.nonatomic)"
-		if let firstElement = arguments.first?.expression,
-		   let specifiedPolicy = ExprSyntax(firstElement)
+		if
+			let firstElement = arguments.first?.expression,
+			let specifiedPolicy = ExprSyntax(firstElement)
 		{
 			policy = specifiedPolicy
 		}
@@ -303,8 +304,9 @@ extension AssociatedMacro {
 		AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.set),
 			body: CodeBlockSyntax {
-				if let willSet = `willSet`,
-				   let body = willSet.body
+				if
+					let willSet = `willSet`,
+					let body = willSet.body
 				{
 					Self.willSet(
 						type: type,
@@ -335,8 +337,9 @@ extension AssociatedMacro {
 					"""
 				}
 
-				if let didSet = `didSet`,
-				   let body = didSet.body
+				if
+					let didSet = `didSet`,
+					let body = didSet.body
 				{
 					Self.didSet(
 						type: type,
@@ -391,7 +394,8 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										name: .keyword(.`self`)
+										name: .keyword(.`self`),
+										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`))
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
@@ -447,7 +451,8 @@ extension AssociatedMacro {
 							signature: .init(
 								capture: .init {
 									ClosureCaptureSyntax(
-										name: .keyword(.`self`)
+										name: .keyword(.`self`),
+										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`))
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {

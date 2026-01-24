@@ -28,8 +28,9 @@ extension TypeSyntax {
 		if self.is(OptionalTypeSyntax.self) || self.is(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
 			return true
 		}
-		if let simpleType = self.as(IdentifierTypeSyntax.self),
-		   simpleType.name.trimmed.text == "Optional"
+		if
+			let simpleType = self.as(IdentifierTypeSyntax.self),
+			simpleType.name.trimmed.text == "Optional"
 		{
 			return true
 		}

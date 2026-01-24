@@ -24,7 +24,6 @@
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import Testing
-
 @testable import AssociationMacro
 
 @Suite

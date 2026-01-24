@@ -1,7 +1,6 @@
 #if canImport(SwizzlingMacro)
 import MacroTesting
 import Testing
-
 @testable import SwizzlingMacro
 
 @Suite(

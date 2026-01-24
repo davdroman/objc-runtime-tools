@@ -639,7 +639,7 @@ struct AssociatedTests {
 				}
 
 				set {
-					let willSet: (String) -> Void = { [self] newValue in
+					let willSet: (String) -> Void = { [self = self] newValue in
 						print("willSet: old", string)
 						print("willSet: new", newValue)
 					}
@@ -707,7 +707,7 @@ struct AssociatedTests {
 						.retain(.nonatomic)
 					)
 
-					let didSet: (String) -> Void = { [self] oldValue in
+					let didSet: (String) -> Void = { [self = self] oldValue in
 						print("didSet: old", oldValue)
 					}
 					didSet(oldValue)
@@ -767,7 +767,7 @@ struct AssociatedTests {
 				}
 
 				set {
-					let willSet: (String) -> Void = { [self] newValue in
+					let willSet: (String) -> Void = { [self = self] newValue in
 						print("willSet: old", string)
 						print("willSet: new", newValue)
 					}
@@ -781,7 +781,7 @@ struct AssociatedTests {
 						.retain(.nonatomic)
 					)
 
-					let didSet: (String) -> Void = { [self] oldValue in
+					let didSet: (String) -> Void = { [self = self] oldValue in
 						print("didSet: old", oldValue)
 					}
 					didSet(oldValue)
@@ -835,7 +835,7 @@ struct AssociatedTests {
 				}
 
 				set {
-					let willSet: (String) -> Void = { [self] new in
+					let willSet: (String) -> Void = { [self = self] new in
 						print("willSet: old", string)
 						print("willSet: new", new)
 					}
@@ -903,7 +903,7 @@ struct AssociatedTests {
 						.retain(.nonatomic)
 					)
 
-					let didSet: (String) -> Void = { [self] old in
+					let didSet: (String) -> Void = { [self = self] old in
 						print("didSet: old", old)
 					}
 					didSet(oldValue)

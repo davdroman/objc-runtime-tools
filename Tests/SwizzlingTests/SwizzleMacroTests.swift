@@ -1,5 +1,7 @@
 #if canImport(SwizzlingMacro)
 import MacroTesting
+import SnapshotTesting
+import SwiftSyntax
 import Testing
 @testable import SwizzlingMacro
 
@@ -7,8 +9,8 @@ import Testing
 	.macros(
 		["swizzle": SwizzleMacro.self],
 		indentationWidth: .tab,
-		record: .missing
-	)
+		record: .missing,
+	),
 )
 struct SwizzleMacroTests {}
 

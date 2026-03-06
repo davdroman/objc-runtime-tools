@@ -7,7 +7,7 @@ import ObjectiveC.runtime
 public macro swizzle<Object, Result>(
 	getter: KeyPath<Object, Result>,
 	returning: Result.Type,
-	implementation: (LocalSelf<Object>) -> Result
+	implementation: (LocalSelf<Object>) -> Result,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")
 
 @discardableResult
@@ -15,7 +15,7 @@ public macro swizzle<Object, Result>(
 public macro swizzle<Object, Param>(
 	setter: KeyPath<Object, Param>,
 	param: Param.Type,
-	implementation: (LocalSelf<Object>, Param) -> Void
+	implementation: (LocalSelf<Object>, Param) -> Void,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")
 
 // MARK: Functions - Non Returning
@@ -38,7 +38,7 @@ public macro swizzle<Object, Param>(
 public macro swizzle<Object, Param>(
 	_ function: (Object) -> (Param) -> Void,
 	param: Param.Type,
-	implementation: (LocalSelf<Object>, Param) -> Void
+	implementation: (LocalSelf<Object>, Param) -> Void,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")
 
 @discardableResult
@@ -46,7 +46,7 @@ public macro swizzle<Object, Param>(
 public macro swizzle<Object, each Param>(
 	_ function: (Object) -> (repeat each Param) -> Void,
 	params: repeat (each Param).Type,
-	implementation: (LocalSelf<Object>, repeat each Param) -> Void
+	implementation: (LocalSelf<Object>, repeat each Param) -> Void,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")
 
 // MARK: Functions - Returning
@@ -70,7 +70,7 @@ public macro swizzle<Object, Param, Result>(
 	_ function: (Object) -> (Param) -> Result,
 	param: Param.Type,
 	returning: Result.Type,
-	implementation: (LocalSelf<Object>, Param) -> Result
+	implementation: (LocalSelf<Object>, Param) -> Result,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")
 
 @discardableResult
@@ -79,5 +79,5 @@ public macro swizzle<Object, each Param, Result>(
 	_ function: (Object) -> (repeat each Param) -> Result,
 	params: repeat (each Param).Type,
 	returning: Result.Type,
-	implementation: (LocalSelf<Object>, repeat each Param) -> Result
+	implementation: (LocalSelf<Object>, repeat each Param) -> Result,
 ) -> AnyHook = #externalMacro(module: "SwizzlingMacro", type: "SwizzleMacro")

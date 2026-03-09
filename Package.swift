@@ -1,4 +1,4 @@
-// swift-tools-version: 6.0
+// swift-tools-version: 6.1
 
 import CompilerPluginSupport
 import PackageDescription
@@ -22,9 +22,9 @@ let package = Package(
 			dependencies: [
 				"Association",
 				"Swizzling",
-			]
+			],
 		),
-	]
+	],
 )
 
 // MARK: Association
@@ -40,7 +40,7 @@ package.targets += [
 		dependencies: [
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-		]
+		],
 	),
 
 	.testTarget(
@@ -49,10 +49,7 @@ package.targets += [
 			"Association",
 			"AssociationMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			// For some reason, with Swift Syntax prebuilts enabled, we need to depend on SwiftCompilerPlugin here to work around error:
-			// Compilation search paths unable to resolve module dependency: 'SwiftCompilerPlugin'
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-		]
+		],
 	),
 ]
 
@@ -69,7 +66,7 @@ package.targets += [
 		dependencies: [
 			.product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
 			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-		]
+		],
 	),
 
 	.testTarget(
@@ -78,10 +75,7 @@ package.targets += [
 			"Swizzling",
 			"SwizzlingMacro",
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
-			// For some reason, with Swift Syntax prebuilts enabled, we need to depend on SwiftCompilerPlugin here to work around error:
-			// Compilation search paths unable to resolve module dependency: 'SwiftCompilerPlugin'
-			.product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
-		]
+		],
 	),
 ]
 
@@ -95,5 +89,6 @@ for target in package.targets {
 	target.swiftSettings? += [
 		.enableUpcomingFeature("ExistentialAny"),
 		.enableUpcomingFeature("InternalImportsByDefault"),
+		.enableUpcomingFeature("MemberImportVisibility"),
 	]
 }

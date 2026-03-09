@@ -1,2 +1,2 @@
-@_exported import Association
-@_exported import Swizzling
+@_exported public import Association
+@_exported public import Swizzling

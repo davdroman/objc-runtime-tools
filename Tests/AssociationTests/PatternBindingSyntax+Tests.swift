@@ -37,8 +37,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					setter
-				})
-			)
+				}),
+			),
 		)
 
 		#expect(setter.description == binding.setter?.description)
@@ -53,8 +53,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					getter
-				})
-			)
+				}),
+			),
 		)
 
 		#expect(getter.description == binding.getter?.description)
@@ -65,8 +65,8 @@ struct PatternBindingSyntaxTests {
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
-				accessors: .getter(body.statements)
-			)
+				accessors: .getter(body.statements),
+			),
 		)
 
 		#expect(getter.description == binding.getter?.description)
@@ -80,14 +80,14 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					setter
-				})
-			)
+				}),
+			),
 		)
 		let newSetter = AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.set),
 			body: .init(statements: CodeBlockItemListSyntax {
 				.init(item: .expr("print(\"hello\")"))
-			})
+			}),
 		)
 
 		binding.setter = newSetter
@@ -99,8 +99,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .getter(.init {
 					DeclSyntax("\"hello\"")
-				})
-			)
+				}),
+			),
 		)
 
 		binding.setter = newSetter
@@ -115,15 +115,15 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					getter
-				})
-			)
+				}),
+			),
 		)
 
 		let newGetter = AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.get),
 			body: .init(statements: CodeBlockItemListSyntax {
 				.init(item: .decl("\"hello\""))
-			})
+			}),
 		)
 
 		binding.getter = newGetter
@@ -135,8 +135,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .getter(.init {
 					DeclSyntax("\"hello\"")
-				})
-			)
+				}),
+			),
 		)
 
 		binding.getter = newGetter
@@ -148,8 +148,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
-				})
-			)
+				}),
+			),
 		)
 
 		binding.getter = newGetter
@@ -165,8 +165,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					`willSet`
-				})
-			)
+				}),
+			),
 		)
 
 		#expect(`willSet`.description == binding.willSet?.description)
@@ -181,8 +181,8 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					`didSet`
-				})
-			)
+				}),
+			),
 		)
 
 		#expect(`didSet`.description == binding.didSet?.description)
@@ -197,15 +197,15 @@ struct PatternBindingSyntaxTests {
 			accessorBlock: .init(
 				accessors: .accessors(.init {
 					`willSet`
-				})
-			)
+				}),
+			),
 		)
 
 		let newWillSet = AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.willSet),
 			body: .init(statements: CodeBlockItemListSyntax {
 				.init(item: .decl("\"hello\""))
-			})
+			}),
 		)
 
 		binding.willSet = newWillSet

@@ -30,7 +30,7 @@ extension Swizzling {
 		_ selector: Selector,
 		methodSignature: MethodSignature.Type,
 		hookSignature: HookSignature.Type,
-		_ implementation: (TypedHook<MethodSignature, HookSignature>) -> HookSignature?
+		_ implementation: (TypedHook<MethodSignature, HookSignature>) -> HookSignature?,
 	) throws(SwizzlingError) -> AnyHook {
 		do {
 			return try SwizzlingHook(class: `class` as AnyClass, selector: selector, implementation: implementation).apply()

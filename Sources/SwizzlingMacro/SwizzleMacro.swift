@@ -6,7 +6,7 @@ import SwiftSyntaxMacros
 struct SwizzleMacro: ExpressionMacro {
 	static func expansion(
 		of node: some FreestandingMacroExpansionSyntax,
-		in context: some MacroExpansionContext
+		in context: some MacroExpansionContext,
 	) throws -> ExprSyntax {
 		guard
 			let firstArgument = node.arguments.first,
@@ -143,7 +143,7 @@ final class FunctionCallRewriter: SyntaxRewriter {
 	init(
 		kind: FunctionKind,
 		baseName: String,
-		functionName: String
+		functionName: String,
 	) {
 		self.kind = kind
 		self.baseName = baseName
@@ -208,18 +208,18 @@ final class FunctionCallRewriter: SyntaxRewriter {
 		newArguments.insert(
 			LabeledExprSyntax(
 				expression: ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier(baseName))),
-				trailingComma: .commaToken(trailingTrivia: .space)
+				trailingComma: .commaToken(trailingTrivia: .space),
 			),
-			at: 0
+			at: 0,
 		)
 
 		// insert hook.selector as the second argument
 		newArguments.insert(
 			LabeledExprSyntax(
 				expression: ExprSyntax("hook.selector"),
-				trailingComma: newArguments.count > 1 ? .commaToken(trailingTrivia: .space) : nil
+				trailingComma: newArguments.count > 1 ? .commaToken(trailingTrivia: .space) : nil,
 			),
-			at: 1
+			at: 1,
 		)
 
 		return ExprSyntax(
@@ -227,7 +227,7 @@ final class FunctionCallRewriter: SyntaxRewriter {
 				.with(\.calledExpression, ExprSyntax("hook.original"))
 				.with(\.arguments, LabeledExprListSyntax(newArguments))
 				.with(\.leadingTrivia, node.leadingTrivia)
-				.with(\.trailingTrivia, node.trailingTrivia)
+				.with(\.trailingTrivia, node.trailingTrivia),
 		)
 	}
 }

@@ -22,6 +22,7 @@
 
 import Foundation
 import SwiftSyntax
+import SwiftSyntaxBuilder
 
 extension PatternBindingSyntax {
 	var setter: AccessorDeclSyntax? {
@@ -172,7 +173,7 @@ extension PatternBindingSyntax {
 				AccessorDeclListSyntax {
 					AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: body))
 					newValue
-				}
+				},
 			)
 		case let .accessors(list):
 			var newList = list
@@ -195,7 +196,7 @@ extension PatternBindingSyntax {
 			newAccessor = .accessors(
 				AccessorDeclListSyntax {
 					newValue
-				}
+				},
 			)
 		}
 

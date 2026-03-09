@@ -30,7 +30,7 @@ extension AssociatedMacro: PeerMacro {
 	static func expansion(
 		of node: AttributeSyntax,
 		providingPeersOf declaration: some DeclSyntaxProtocol,
-		in context: some MacroExpansionContext
+		in context: some MacroExpansionContext,
 	) throws -> [DeclSyntax] {
 		guard
 			let varDecl = declaration.as(VariableDeclSyntax.self),
@@ -65,10 +65,10 @@ extension AssociatedMacro: PeerMacro {
 					pattern: IdentifierPatternSyntax(identifier: .identifier("__associated_\(identifier.trimmed)Key")),
 					typeAnnotation: .init(type: IdentifierTypeSyntax(name: .identifier("UnsafeRawPointer"))),
 					accessorBlock: .init(
-						accessors: .getter("\(raw: keyAccessor)")
-					)
+						accessors: .getter("\(raw: keyAccessor)"),
+					),
 				)
-			}
+			},
 		)
 
 		var decls = [
@@ -85,12 +85,12 @@ extension AssociatedMacro: PeerMacro {
 				bindings: PatternBindingListSyntax {
 					PatternBindingSyntax(
 						pattern: IdentifierPatternSyntax(
-							identifier: .identifier(flagName)
+							identifier: .identifier(flagName),
 						),
 						typeAnnotation: .init(type: IdentifierTypeSyntax(name: .identifier("Bool"))),
-						initializer: InitializerClauseSyntax(value: BooleanLiteralExprSyntax(false))
+						initializer: InitializerClauseSyntax(value: BooleanLiteralExprSyntax(false)),
 					)
-				}
+				},
 			)
 
 			// nested peer macro will not expand
@@ -103,14 +103,14 @@ extension AssociatedMacro: PeerMacro {
 				bindings: PatternBindingListSyntax {
 					PatternBindingSyntax(
 						pattern: IdentifierPatternSyntax(
-							identifier: .identifier("__associated___associated_\(identifier.trimmed)IsSetKey")
+							identifier: .identifier("__associated___associated_\(identifier.trimmed)IsSetKey"),
 						),
 						typeAnnotation: .init(type: IdentifierTypeSyntax(name: .identifier("UnsafeRawPointer"))),
 						accessorBlock: .init(
-							accessors: .getter("\(raw: keyAccessor)")
-						)
+							accessors: .getter("\(raw: keyAccessor)"),
+						),
 					)
-				}
+				},
 			)
 			decls.append(DeclSyntax(flagDecl))
 			decls.append(DeclSyntax(flagKeyDecl))
@@ -124,7 +124,7 @@ extension AssociatedMacro: AccessorMacro {
 	static func expansion(
 		of node: AttributeSyntax,
 		providingAccessorsOf declaration: some DeclSyntaxProtocol,
-		in context: some MacroExpansionContext
+		in context: some MacroExpansionContext,
 	) throws -> [AccessorDeclSyntax] {
 		guard
 			let varDecl = declaration.as(VariableDeclSyntax.self),
@@ -191,7 +191,7 @@ extension AssociatedMacro: AccessorMacro {
 				type: type,
 				associatedKey: associatedKey,
 				policy: policy,
-				defaultValue: defaultValue
+				defaultValue: defaultValue,
 			),
 
 			Self.setter(
@@ -201,7 +201,7 @@ extension AssociatedMacro: AccessorMacro {
 				associatedKey: associatedKey,
 				hasDefaultValue: defaultValue != nil,
 				willSet: binding.willSet,
-				didSet: binding.didSet
+				didSet: binding.didSet,
 			),
 		]
 	}
@@ -219,7 +219,7 @@ extension AssociatedMacro {
 		type: TypeSyntax,
 		associatedKey: ExprSyntax,
 		policy: ExprSyntax,
-		defaultValue: ExprSyntax?
+		defaultValue: ExprSyntax?,
 	) -> AccessorDeclSyntax {
 		let typeWithoutOptional = if let type = type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
 			type.wrappedType
@@ -278,7 +278,7 @@ extension AssociatedMacro {
 					?? \(defaultValue ?? "nil")
 					"""
 				}
-			}
+			},
 		)
 	}
 }
@@ -299,7 +299,7 @@ extension AssociatedMacro {
 		associatedKey: ExprSyntax,
 		hasDefaultValue: Bool,
 		`willSet`: AccessorDeclSyntax?,
-		`didSet`: AccessorDeclSyntax?
+		`didSet`: AccessorDeclSyntax?,
 	) -> AccessorDeclSyntax {
 		AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.set),
@@ -311,7 +311,7 @@ extension AssociatedMacro {
 					Self.willSet(
 						type: type,
 						accessor: willSet,
-						body: body
+						body: body,
 					)
 
 					Self.callWillSet()
@@ -344,12 +344,12 @@ extension AssociatedMacro {
 					Self.didSet(
 						type: type,
 						accessor: didSet,
-						body: body
+						body: body,
 					).with(\.leadingTrivia, .newlines(2))
 
 					Self.callDidSet()
 				}
-			}
+			},
 		)
 	}
 
@@ -368,7 +368,7 @@ extension AssociatedMacro {
 	static func `willSet`(
 		type: TypeSyntax,
 		accessor: AccessorDeclSyntax,
-		body: CodeBlockSyntax
+		body: CodeBlockSyntax,
 	) -> VariableDeclSyntax {
 		let newValue = accessor.parameters?.name.trimmed ?? .identifier("newValue")
 
@@ -381,13 +381,13 @@ extension AssociatedMacro {
 						type: FunctionTypeSyntax(
 							parameters: .init {
 								TupleTypeElementSyntax(
-									type: type.trimmed
+									type: type.trimmed,
 								)
 							},
 							returnClause: ReturnClauseSyntax(
-								type: IdentifierTypeSyntax(name: .identifier("Void"))
-							)
-						)
+								type: IdentifierTypeSyntax(name: .identifier("Void")),
+							),
+						),
 					),
 					initializer: .init(
 						value: ClosureExprSyntax(
@@ -395,18 +395,18 @@ extension AssociatedMacro {
 								capture: .init {
 									ClosureCaptureSyntax(
 										name: .keyword(.`self`),
-										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`))
+										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`)),
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
 									ClosureShorthandParameterSyntax(name: newValue)
-								})
+								}),
 							),
-							statements: .init(body.statements.map(\.trimmed))
-						)
-					)
+							statements: .init(body.statements.map(\.trimmed)),
+						),
+					),
 				)
-			}
+			},
 		)
 	}
 
@@ -425,7 +425,7 @@ extension AssociatedMacro {
 	static func `didSet`(
 		type: TypeSyntax,
 		accessor: AccessorDeclSyntax,
-		body: CodeBlockSyntax
+		body: CodeBlockSyntax,
 	) -> VariableDeclSyntax {
 		let oldValue = accessor.parameters?.name.trimmed ?? .identifier("oldValue")
 
@@ -438,13 +438,13 @@ extension AssociatedMacro {
 						type: FunctionTypeSyntax(
 							parameters: .init {
 								TupleTypeElementSyntax(
-									type: type.trimmed
+									type: type.trimmed,
 								)
 							},
 							returnClause: ReturnClauseSyntax(
-								type: IdentifierTypeSyntax(name: .identifier("Void"))
-							)
-						)
+								type: IdentifierTypeSyntax(name: .identifier("Void")),
+							),
+						),
 					),
 					initializer: .init(
 						value: ClosureExprSyntax(
@@ -452,18 +452,18 @@ extension AssociatedMacro {
 								capture: .init {
 									ClosureCaptureSyntax(
 										name: .keyword(.`self`),
-										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`))
+										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`)),
 									)
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
 									ClosureShorthandParameterSyntax(name: oldValue)
-								})
+								}),
 							),
-							statements: .init(body.statements.map(\.trimmed))
-						)
-					)
+							statements: .init(body.statements.map(\.trimmed)),
+						),
+					),
 				)
-			}
+			},
 		)
 	}
 
@@ -479,10 +479,10 @@ extension AssociatedMacro {
 			argumentList: {
 				.init(
 					expression: DeclReferenceExprSyntax(
-						baseName: .identifier("newValue")
-					)
+						baseName: .identifier("newValue"),
+					),
 				)
-			}
+			},
 		)
 	}
 
@@ -498,10 +498,10 @@ extension AssociatedMacro {
 			argumentList: {
 				.init(
 					expression: DeclReferenceExprSyntax(
-						baseName: .identifier("oldValue")
-					)
+						baseName: .identifier("oldValue"),
+					),
 				)
-			}
+			},
 		)
 	}
 }

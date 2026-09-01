@@ -28,7 +28,7 @@ struct SwizzleTests {
 
 extension SwizzleTests {
 	@Test
-	func swizzleGetter() throws {
+	func `swizzle getter`() throws {
 		let sut = SUT()
 		#expect(sut.state == 0)
 
@@ -46,7 +46,7 @@ extension SwizzleTests {
 
 extension SwizzleTests {
 	@Test
-	func swizzleSetter() throws {
+	func `swizzle setter`() throws {
 		let sut = SUT()
 		#expect(sut.state == 0)
 
@@ -65,7 +65,7 @@ extension SwizzleTests {
 
 extension SwizzleTests {
 	@Test
-	func swizzleFunctionWithoutParametersWithoutReturn() throws {
+	func `swizzle function without parameters or a return value`() throws {
 		let sut = SUT()
 
 		let hook = try #swizzle(SUT.functionWithoutParamsWithoutReturn) { $self in
@@ -86,7 +86,7 @@ extension SwizzleTests {
 	}
 
 	@Test
-	func swizzleFunctionWithoutParametersWithReturn() throws {
+	func `swizzle function without parameters and with a return value`() throws {
 		let hook = try #swizzle(
 			SUT.functionWithoutParamsWithReturn,
 			returning: Int.self,
@@ -108,7 +108,7 @@ extension SwizzleTests {
 	}
 
 	@Test
-	func swizzleFunctionWithParametersWithoutReturn() throws {
+	func `swizzle function with parameters and without a return value`() throws {
 		let hook = try #swizzle(
 			SUT.functionWithParamsWithoutReturn,
 			param: Int.self,
@@ -127,7 +127,7 @@ extension SwizzleTests {
 	}
 
 	@Test
-	func swizzleFunctionWithParametersWithReturn() throws {
+	func `swizzle function with parameters and a return value`() throws {
 		let hook = try #swizzle(
 			SUT.functionWithParamsWithReturn,
 			param: Int.self,
@@ -157,7 +157,7 @@ struct SwizzleLifetimeTests {
 	weak static var hook: AnyHook? = nil
 
 	@Test
-	func swizzlePersistsAcrossScopes_entryPoint() throws {
+	func `swizzle persists across scopes entry point`() throws {
 		let sut = SUT()
 		#expect(sut.state == 0)
 
@@ -170,7 +170,7 @@ struct SwizzleLifetimeTests {
 	}
 
 	@Test
-	func swizzlePersistsAcrossScopes_exitPoint() throws {
+	func `swizzle persists across scopes exit point`() throws {
 		let sut = SUT()
 		#expect(sut.state == 1)
 

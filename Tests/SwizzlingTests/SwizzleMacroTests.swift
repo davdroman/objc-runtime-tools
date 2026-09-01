@@ -2,8 +2,8 @@
 import MacroTesting
 import SnapshotTesting
 import SwiftSyntax
-import Testing
 @testable import SwizzlingMacro
+import Testing
 
 @Suite(
 	.macros(
@@ -19,7 +19,7 @@ struct SwizzleMacroTests {}
 /// Test property swizzling
 extension SwizzleMacroTests {
 	@Test(arguments: ["self", "$self", "`self`"])
-	func swizzleGetter(selfLabel: String) {
+	func `swizzle getter`(selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(
@@ -52,7 +52,7 @@ extension SwizzleMacroTests {
 	}
 
 	@Test(arguments: ["self", "$self", "`self`"])
-	func swizzleSetter(selfLabel: String) {
+	func `swizzle setter`(selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(
@@ -86,7 +86,7 @@ extension SwizzleMacroTests {
 /// Test function swizzling
 extension SwizzleMacroTests {
 	@Test(arguments: ["self", "$self", "`self`"])
-	func swizzleFunctionWithoutParametersWithoutReturn(selfLabel: String) {
+	func `swizzle function without parameters or a return value`(selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(
@@ -116,7 +116,7 @@ extension SwizzleMacroTests {
 	}
 
 	@Test(arguments: ["self", "$self", "`self`"])
-	func swizzleFunctionWithoutParametersWithReturn(selfLabel: String) {
+	func `swizzle function without parameters and with a return value`(selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(
@@ -149,7 +149,7 @@ extension SwizzleMacroTests {
 	}
 
 	@Test(arguments: ["param", "params"], ["self", "$self", "`self`"])
-	func swizzleFunctionWithParametersWithoutReturn(paramOrParams: String, selfLabel: String) {
+	func `swizzle function with parameters and without a return value`(paramOrParams: String, selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(
@@ -180,7 +180,7 @@ extension SwizzleMacroTests {
 	}
 
 	@Test(arguments: ["self", "$self", "`self`"])
-	func swizzleFunctionWithParametersWithReturn(selfLabel: String) {
+	func `swizzle function with parameters and a return value`(selfLabel: String) {
 		assertMacro {
 			"""
 			#swizzle(

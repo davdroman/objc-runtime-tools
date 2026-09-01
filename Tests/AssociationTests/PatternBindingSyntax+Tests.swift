@@ -21,15 +21,15 @@
 //  SOFTWARE.
 
 #if canImport(AssociationMacro)
+@testable import AssociationMacro
 import SwiftSyntax
 import SwiftSyntaxBuilder
 import Testing
-@testable import AssociationMacro
 
 @Suite
 struct PatternBindingSyntaxTests {
 	@Test
-	func testSetter() {
+	func `reads setter`() {
 		let setter = AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		let binding: PatternBindingSyntax = .init(
@@ -45,7 +45,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testGetter() throws {
+	func `reads getter`() throws {
 		let getter = AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		var binding: PatternBindingSyntax = .init(
@@ -73,7 +73,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func setSetter() {
+	func `sets setter`() {
 		let setter = AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -108,7 +108,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func setGetter() {
+	func `sets getter`() {
 		let getter = AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: CodeBlockItemListSyntax {}))
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -157,7 +157,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testWillSet() {
+	func `willSet`() {
 		let `willSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.willSet), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		let binding: PatternBindingSyntax = .init(
@@ -173,7 +173,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func testDidSet() {
+	func `didSet`() {
 		let `didSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.didSet), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		let binding: PatternBindingSyntax = .init(
@@ -189,7 +189,7 @@ struct PatternBindingSyntaxTests {
 	}
 
 	@Test
-	func setWillSet() {
+	func `sets willSet`() {
 		let `willSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.willSet), body: .init(statements: CodeBlockItemListSyntax {}))
 
 		var binding: PatternBindingSyntax = .init(

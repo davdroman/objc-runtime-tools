@@ -46,7 +46,7 @@ class ClassType {
 	@Suite
 	struct Tests {
 		@Test
-		func keysUnique() {
+		func `keys are unique`() {
 			let keys = [
 				ClassType.__associated_intKey,
 				ClassType.__associated_optionalDoubleKey,
@@ -117,13 +117,13 @@ class ClassType {
 		}
 
 		@Test
-		func setDefaultValue() {
+		func `default value is stable`() {
 			let item = ClassType()
 			#expect(item.classType === item.classType)
 		}
 
 		@Test
-		func testProtocol() {
+		func `associated property declared in protocol`() {
 			let item = ClassType()
 			#expect(item.definedInProtocol == "hello")
 

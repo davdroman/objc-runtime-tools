@@ -21,11 +21,11 @@
 //  SOFTWARE.
 
 #if canImport(AssociationMacro)
+@testable import AssociationMacro
 import MacroTesting
 import SnapshotTesting
 import SwiftSyntax
 import Testing
-@testable import AssociationMacro
 
 @Suite(
 	.macros(
@@ -220,7 +220,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func stringWithOtherPolicy() {
+	func `string with other policy`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -266,7 +266,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func optionalString() {
+	func `optional string`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -302,7 +302,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func optionalGenericsString() {
+	func `optional String using generic syntax`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -338,7 +338,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func implicitlyUnwrappedOptionalString() {
+	func `implicitly unwrapped optional string`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -374,7 +374,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func optionalStringWithInitialValue() {
+	func `optional string with initial value`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -476,7 +476,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func intArray() {
+	func `Int array`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -522,7 +522,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func optionalBool() {
+	func `optional Bool`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -604,7 +604,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func willSet() {
+	func `willSet`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -666,7 +666,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func didSet() {
+	func `didSet`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -726,7 +726,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func willSetAndDidSet() {
+	func `willSet and didSet`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -800,7 +800,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func willSetWithArgument() {
+	func `willSet with argument`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -862,7 +862,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func didSetWithArgument() {
+	func `didSet with argument`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -922,7 +922,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func modernWritingStyle() {
+	func `modern writing style`() {
 		assertMacro {
 			"""
 			@Associated(.copy(.nonatomic))
@@ -970,7 +970,7 @@ struct AssociatedTests {
 	// MARK: Diagnostics test
 
 	@Test
-	func diagnosticsDeclarationType() {
+	func `requires a property declaration`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -986,7 +986,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func diagnosticsGetterAndSetter() {
+	func `rejects implemented getter and setter`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -1009,7 +1009,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func diagnosticsInitialValue() {
+	func `requires an initial value`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))
@@ -1025,7 +1025,7 @@ struct AssociatedTests {
 	}
 
 	@Test
-	func diagnosticsSpecifyType() {
+	func `requires an explicit type`() {
 		assertMacro {
 			"""
 			@Associated(.retain(.nonatomic))

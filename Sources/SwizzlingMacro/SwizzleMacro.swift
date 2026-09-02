@@ -39,7 +39,8 @@ struct SwizzleMacro: ExpressionMacro {
 		let params = node.arguments.dropFirst()
 			.prefix(while: { $0.label?.text != "returning" && $0.label?.text != "implementation" })
 		let paramTypes = if !params.isEmpty {
-			", " + params.map { $0.expression.trimmedDescription.replacingOccurrences(of: ".self", with: "") }
+			", " + params
+				.map { $0.expression.trimmedDescription.replacingOccurrences(of: ".self", with: "") }
 				.joined(separator: ", ")
 		} else {
 			""

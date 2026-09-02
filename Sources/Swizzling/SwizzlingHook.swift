@@ -28,8 +28,8 @@ final class SwizzlingHook<MethodSignature, HookSignature>: TypedHook<MethodSigna
 	init(
 		`class`: AnyClass,
 		selector: Selector,
-		implementation: (SwizzlingHook<MethodSignature, HookSignature>)
-			-> HookSignature?, // this must be optional or swift runtime will crash. Or swiftc may segfault. Compiler bug?
+		// `HookSignature?` must be optional or the Swift runtime will crash. `swiftc` may also segfault. Compiler bug?
+		implementation: (SwizzlingHook<MethodSignature, HookSignature>) -> HookSignature?,
 	) throws {
 		try super.init(class: `class`, selector: selector)
 		replacementIMP = imp_implementationWithBlock(implementation(self) as Any)

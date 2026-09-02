@@ -28,7 +28,8 @@ final class SwizzlingHook<MethodSignature, HookSignature>: TypedHook<MethodSigna
 	init(
 		`class`: AnyClass,
 		selector: Selector,
-		implementation: (SwizzlingHook<MethodSignature, HookSignature>) -> HookSignature?, // this must be optional or swift runtime will crash. Or swiftc may segfault. Compiler bug?
+		implementation: (SwizzlingHook<MethodSignature, HookSignature>)
+			-> HookSignature?, // this must be optional or swift runtime will crash. Or swiftc may segfault. Compiler bug?
 	) throws {
 		try super.init(class: `class`, selector: selector)
 		replacementIMP = imp_implementationWithBlock(implementation(self) as Any)
@@ -45,7 +46,11 @@ final class SwizzlingHook<MethodSignature, HookSignature>: TypedHook<MethodSigna
 		let method = try validate(expectedState: .swizzled)
 		precondition(origIMP != nil)
 		let previousIMP = class_replaceMethod(`class`, selector, origIMP!, method_getTypeEncoding(method))
-		guard previousIMP == replacementIMP else { throw SwizzlingError.unexpectedImplementation(`class`, selector, previousIMP) }
+		guard previousIMP == replacementIMP else { throw SwizzlingError.unexpectedImplementation(
+			`class`,
+			selector,
+			previousIMP,
+		) }
 		Swizzling.log("Restored -[\(`class`).\(selector)] IMP: \(origIMP!)")
 	}
 

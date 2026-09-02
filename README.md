@@ -137,6 +137,15 @@ class MyClass: NSObject {
 }
 ```
 
+## Development
+
+Install [Mise](https://mise.jdx.dev/), then install the project tools and Git hooks:
+
+```sh
+mise install
+mise exec -- hk install --mise
+```
+
 ## Credits
 
 This library is inspired by and builds upon the following projects:

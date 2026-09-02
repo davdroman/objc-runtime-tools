@@ -46,11 +46,13 @@ final class SwizzlingHook<MethodSignature, HookSignature>: TypedHook<MethodSigna
 		let method = try validate(expectedState: .swizzled)
 		precondition(origIMP != nil)
 		let previousIMP = class_replaceMethod(`class`, selector, origIMP!, method_getTypeEncoding(method))
-		guard previousIMP == replacementIMP else { throw SwizzlingError.unexpectedImplementation(
-			`class`,
-			selector,
-			previousIMP,
-		) }
+		guard previousIMP == replacementIMP else {
+			throw SwizzlingError.unexpectedImplementation(
+				`class`,
+				selector,
+				previousIMP,
+			)
+		}
 		Swizzling.log("Restored -[\(`class`).\(selector)] IMP: \(origIMP!)")
 	}
 

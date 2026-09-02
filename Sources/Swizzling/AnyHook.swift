@@ -81,10 +81,12 @@ public class AnyHook {
 
 	/// Validate that the selector exists on the active class.
 	@discardableResult func validate(expectedState: State = .prepared) throws -> Method {
-		guard let method = class_getInstanceMethod(`class`, selector) else { throw SwizzlingError.methodNotFound(
-			`class`,
-			selector,
-		) }
+		guard let method = class_getInstanceMethod(`class`, selector) else {
+			throw SwizzlingError.methodNotFound(
+				`class`,
+				selector,
+			)
+		}
 		guard state == expectedState else { throw SwizzlingError.invalidState(expectedState: expectedState) }
 		return method
 	}

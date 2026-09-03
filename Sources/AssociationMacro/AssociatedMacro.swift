@@ -355,6 +355,22 @@ extension AssociatedMacro {
 		)
 	}
 
+	private static var selfCapture: ClosureCaptureSyntax {
+		let selfReference = DeclReferenceExprSyntax(baseName: .keyword(.`self`))
+		#if canImport(SwiftSyntax601)
+		return ClosureCaptureSyntax(
+			name: .keyword(.`self`),
+			initializer: .init(value: selfReference),
+		)
+		#else
+		return ClosureCaptureSyntax(
+			name: .keyword(.`self`),
+			equal: .equalToken(),
+			expression: selfReference,
+		)
+		#endif
+	}
+
 	/// `willSet` closure
 	///
 	/// Convert a willSet accessor to a closure variable in the following format.
@@ -395,10 +411,7 @@ extension AssociatedMacro {
 						value: ClosureExprSyntax(
 							signature: .init(
 								capture: .init {
-									ClosureCaptureSyntax(
-										name: .keyword(.`self`),
-										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`)),
-									)
+									Self.selfCapture
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
 									ClosureShorthandParameterSyntax(name: newValue)
@@ -452,10 +465,7 @@ extension AssociatedMacro {
 						value: ClosureExprSyntax(
 							signature: .init(
 								capture: .init {
-									ClosureCaptureSyntax(
-										name: .keyword(.`self`),
-										expression: DeclReferenceExprSyntax(baseName: .keyword(.`self`)),
-									)
+									Self.selfCapture
 								},
 								parameterClause: .init(ClosureShorthandParameterListSyntax {
 									ClosureShorthandParameterSyntax(name: oldValue)

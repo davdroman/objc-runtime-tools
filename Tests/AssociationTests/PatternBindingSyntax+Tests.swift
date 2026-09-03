@@ -30,7 +30,10 @@ import Testing
 struct PatternBindingSyntaxTests {
 	@Test
 	func `reads setter`() {
-		let setter = AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
+		let setter = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.set),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 
 		let binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -46,7 +49,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `reads getter`() throws {
-		let getter = AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: CodeBlockItemListSyntax {}))
+		let getter = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.get),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -59,7 +65,7 @@ struct PatternBindingSyntaxTests {
 
 		#expect(getter.description == binding.getter?.description)
 
-		/* getter only */
+		// getter only
 		let body = try #require(getter.body, "body must not be nil")
 
 		binding = .init(
@@ -74,7 +80,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `sets setter`() {
-		let setter = AccessorDeclSyntax(accessorSpecifier: .keyword(.set), body: .init(statements: CodeBlockItemListSyntax {}))
+		let setter = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.set),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -93,7 +102,7 @@ struct PatternBindingSyntaxTests {
 		binding.setter = newSetter
 		#expect(newSetter.description == binding.setter?.description)
 
-		/* getter only */
+		// getter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -109,7 +118,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `sets getter`() {
-		let getter = AccessorDeclSyntax(accessorSpecifier: .keyword(.get), body: .init(statements: CodeBlockItemListSyntax {}))
+		let getter = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.get),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -129,7 +141,7 @@ struct PatternBindingSyntaxTests {
 		binding.getter = newGetter
 		#expect(newGetter.description == binding.getter?.description)
 
-		/* getter only */
+		// getter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -142,7 +154,7 @@ struct PatternBindingSyntaxTests {
 		binding.getter = newGetter
 		#expect(newGetter.description == binding.getter?.description)
 
-		/* setter only */
+		// setter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -158,7 +170,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `willSet`() {
-		let `willSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.willSet), body: .init(statements: CodeBlockItemListSyntax {}))
+		let `willSet` = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.willSet),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 
 		let binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -174,7 +189,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `didSet`() {
-		let `didSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.didSet), body: .init(statements: CodeBlockItemListSyntax {}))
+		let `didSet` = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.didSet),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 
 		let binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
@@ -190,7 +208,10 @@ struct PatternBindingSyntaxTests {
 
 	@Test
 	func `sets willSet`() {
-		let `willSet` = AccessorDeclSyntax(accessorSpecifier: .keyword(.willSet), body: .init(statements: CodeBlockItemListSyntax {}))
+		let `willSet` = AccessorDeclSyntax(
+			accessorSpecifier: .keyword(.willSet),
+			body: .init(statements: CodeBlockItemListSyntax {}),
+		)
 
 		var binding: PatternBindingSyntax = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),

@@ -98,6 +98,6 @@ jobs:
       - name: Check Swift Syntax Compatibility
         uses: davdroman/swift-syntax-compatibility-check@v1
         with:
-          run-tests: false
+          run-tests: true
           major-versions-only: true
           disable-prebuilts: true

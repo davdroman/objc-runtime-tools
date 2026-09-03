@@ -54,7 +54,7 @@ try #swizzle(UIViewController.viewDidLoad) { $self in
     print("After")
 }
 
-try #swizzle(UIViewController.viewDidAppear, param: Bool.self) { $self, animated in
+try #swizzle(UIViewController.viewDidAppear, params: Bool.self) { $self, animated in
     print("Before")
     self.viewDidAppear(animated)
     print("After")

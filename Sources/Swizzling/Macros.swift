@@ -20,19 +20,7 @@ public macro swizzle<Object, Param>(
 
 // MARK: Functions - Non Returning
 
-// NOTE: this is only needed because some weird behavior in the compiler causes the variadic
-// version below to throw a false positive error when passing a single param under very specific
-// conditions. This version is a workaround that can be used in those cases.
-//
-// Reproducible case:
-//	```swift
-//	try #swizzle(
-//		SUT.functionWithParamsWithoutReturn,
-//		params: Int.self
-//	) { $self, state in
-//		self.functionWithParamsWithoutReturn(state) // 🛑 error: Cannot pass value pack expansion to non-pack parameter of type 'Int'
-//	}
-//	```
+@available(*, deprecated, renamed: "swizzle(_:params:implementation:)")
 @discardableResult
 @freestanding(expression)
 public macro swizzle<Object, Param>(
@@ -51,19 +39,7 @@ public macro swizzle<Object, each Param>(
 
 // MARK: Functions - Returning
 
-// NOTE: this is only needed because some weird behavior in the compiler causes the variadic
-// version below to throw a false positive error when passing a single param under very specific
-// conditions. This version is a workaround that can be used in those cases.
-//
-// Reproducible case:
-//	```swift
-//	try #swizzle(
-//		SUT.functionWithParamsWithReturn,
-//		params: Int.self,
-//		returning: Int.self
-//	) { $self, state in
-//		self.functionWithParamsWithReturn(state) // 🛑 error: Cannot pass value pack expansion to non-pack parameter of type 'Int'
-//	}
+@available(*, deprecated, renamed: "swizzle(_:params:returning:implementation:)")
 @discardableResult
 @freestanding(expression)
 public macro swizzle<Object, Param, Result>(

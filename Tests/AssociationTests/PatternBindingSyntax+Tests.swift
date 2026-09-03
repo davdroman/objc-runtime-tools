@@ -65,7 +65,7 @@ struct PatternBindingSyntaxTests {
 
 		#expect(getter.description == binding.getter?.description)
 
-		/* getter only */
+		// getter only
 		let body = try #require(getter.body, "body must not be nil")
 
 		binding = .init(
@@ -102,7 +102,7 @@ struct PatternBindingSyntaxTests {
 		binding.setter = newSetter
 		#expect(newSetter.description == binding.setter?.description)
 
-		/* getter only */
+		// getter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -141,7 +141,7 @@ struct PatternBindingSyntaxTests {
 		binding.getter = newGetter
 		#expect(newGetter.description == binding.getter?.description)
 
-		/* getter only */
+		// getter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(
@@ -154,7 +154,7 @@ struct PatternBindingSyntaxTests {
 		binding.getter = newGetter
 		#expect(newGetter.description == binding.getter?.description)
 
-		/* setter only */
+		// setter only
 		binding = .init(
 			pattern: IdentifierPatternSyntax(identifier: .identifier("value")),
 			accessorBlock: .init(

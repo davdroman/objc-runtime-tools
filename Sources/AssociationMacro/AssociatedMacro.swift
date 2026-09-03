@@ -221,13 +221,14 @@ extension AssociatedMacro {
 		policy: ExprSyntax,
 		defaultValue: ExprSyntax?,
 	) -> AccessorDeclSyntax {
-		let typeWithoutOptional = if let type = type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
-			type.wrappedType
-		} else if let type = type.as(OptionalTypeSyntax.self) {
-			type.wrappedType
-		} else {
-			type
-		}
+		let typeWithoutOptional =
+			if let type = type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
+				type.wrappedType
+			} else if let type = type.as(OptionalTypeSyntax.self) {
+				type.wrappedType
+			} else {
+				type
+			}
 
 		return AccessorDeclSyntax(
 			accessorSpecifier: .keyword(.get),
@@ -345,7 +346,8 @@ extension AssociatedMacro {
 						type: type,
 						accessor: didSet,
 						body: body,
-					).with(\.leadingTrivia, .newlines(2))
+					)
+					.with(\.leadingTrivia, .newlines(2))
 
 					Self.callDidSet()
 				}

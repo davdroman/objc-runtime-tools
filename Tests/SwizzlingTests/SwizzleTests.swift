@@ -111,7 +111,7 @@ extension SwizzleTests {
 	func `swizzle function with parameters and without a return value`() throws {
 		let hook = try #swizzle(
 			SUT.functionWithParamsWithoutReturn,
-			param: Int.self,
+			params: Int.self,
 		) { $self, state in
 			self.functionWithParamsWithoutReturn(state + 1)
 		}
@@ -130,7 +130,7 @@ extension SwizzleTests {
 	func `swizzle function with parameters and a return value`() throws {
 		let hook = try #swizzle(
 			SUT.functionWithParamsWithReturn,
-			param: Int.self,
+			params: Int.self,
 			returning: Int.self,
 		) { $sut, value in
 			sut.functionWithParamsWithReturn(value + 1)

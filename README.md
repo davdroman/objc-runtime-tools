@@ -5,7 +5,7 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fdavdroman%2Fobjc-runtime-tools%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/davdroman/objc-runtime-tools)
 [![](https://img.shields.io/badge/Documentation-gray?logo=swift&logoColor=white)](https://swiftpackageindex.com/davdroman/objc-runtime-tools/main/documentation/objcruntimetools)
 
-ObjCRuntimeTools is a Swift library that provides powerful tools for working with Objective-C runtime features, including property association and method swizzling. It leverages modern Swift macros to simplify and enhance the use of these runtime capabilities.
+ObjCRuntimeTools is a Swift library that provides powerful tools for working with Objective-C runtime features, including property association, delegate forwarding and method swizzling. It leverages modern Swift macros to simplify and enhance the use of these runtime capabilities.
 
 ## Features
 
@@ -44,9 +44,7 @@ extension MyClass {
 
 ### Delegate Forwarding
 
-Subclass `DelegateProxy` to take over an object's delegate slot without replacing its delegate. The proxy handles the methods it implements and forwards every other call to the delegate it replaced, which stays in place when the proxy is released.
-
-This is useful when a framework owns a delegate you can't replace, such as the presentation controller delegate SwiftUI sets for a sheet:
+Subclass `DelegateProxy` to intercept some of an object's delegate calls while the delegate it replaced keeps receiving the rest, and gets its slot back when the proxy is released. This is useful when a framework owns a delegate you can't replace, such as the presentation controller delegate SwiftUI sets for a sheet:
 
 ```swift
 @MainActor
@@ -63,9 +61,9 @@ final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControll
 interceptor.install(on: presentationController, at: \.delegate)
 ```
 
-Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat. If the replaced delegate goes away while the proxy is installed, calls the owner still makes to methods only that delegate implemented are dropped instead of raising, since UIKit and AppKit decide which methods a delegate implements once, when it's assigned.
+Installing again on a slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat. If the replaced delegate goes away while the proxy is installed, calls the owner still makes to it are dropped instead of crashing on an unrecognized selector.
 
-`DelegateProxy` itself isn't isolated: the subclass takes the isolation of the delegate protocol. Delegates UIKit and AppKit call on the main actor get a `@MainActor` subclass, and delegates a framework calls from its own threads, such as `XMLParserDelegate` or `URLSessionTaskDelegate`, get a nonisolated subclass that protects its own state. When the delegate protocol inherits `Sendable`, as `URLSessionTaskDelegate` does, declare the subclass `@unchecked Sendable` too:
+Delegates called on the main actor, like UIKit's and AppKit's, get a `@MainActor` subclass. Delegates a framework calls on its own threads, such as `XMLParserDelegate` or `URLSessionTaskDelegate`, get a nonisolated one, declared `@unchecked Sendable` when the protocol inherits `Sendable`:
 
 ```swift
 final class CompletionObserver: DelegateProxy<any URLSessionTaskDelegate>, URLSessionTaskDelegate, @unchecked Sendable {
@@ -78,7 +76,7 @@ final class CompletionObserver: DelegateProxy<any URLSessionTaskDelegate>, URLSe
 }
 ```
 
-The proxy gives the slot back in the isolation it was installed from. Releasing or uninstalling it from somewhere else schedules that write on the right actor instead of performing it immediately. Some owners stop accepting delegates at some point, such as a `URLSessionTask` once resumed, so a proxy on one of those has to outlive it.
+Releasing or uninstalling the proxy away from the actor it was installed from gives the slot back asynchronously on that actor. Some owners stop accepting delegates at some point, such as a `URLSessionTask` once resumed, so a proxy on one of those has to outlive it.
 
 ### Swizzling
 

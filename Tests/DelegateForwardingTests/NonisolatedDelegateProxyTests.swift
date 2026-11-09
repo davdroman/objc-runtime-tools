@@ -2,9 +2,6 @@ import DelegateForwarding
 import Foundation
 import Testing
 
-private let willStart = NSSelectorFromString("willStart")
-private let didFinish = NSSelectorFromString("didFinish")
-
 /// A proxy for a delegate the framework calls on its own threads, like `URLSessionDelegate`, installed and released
 /// outside any actor.
 struct NonisolatedDelegateProxyTests {
@@ -48,11 +45,79 @@ struct NonisolatedDelegateProxyTests {
 		owner.worker = original
 		let proxy = InterceptingProxy()
 		proxy.install(on: owner, at: \.worker)
+		// Forwarding autoreleases the forwardee, which would keep it alive past the release below.
+		autoreleasepool { #expect(proxy.perform(canStart) != nil) }
 
 		original = nil
 
 		#expect(proxy.perform(willStart) == nil)
 		#expect(proxy.perform(didFinish) == nil)
+		// `perform` hands back the raw return value, so a dropped `Bool` method reads as nil.
+		#expect(proxy.perform(canStart) == nil)
+	}
+
+	@Test
+	func `installing again on the slot it holds changes nothing`() {
+		let owner = Owner()
+		let original = RecordingWorker()
+		owner.worker = original
+		let proxy = InterceptingProxy()
+		proxy.install(on: owner, at: \.worker)
+		proxy.install(on: owner, at: \.worker)
+
+		#expect(owner.worker === proxy)
+		#expect(proxy.forwardee === original)
+	}
+
+	@Test
+	func `installing after the slot is given another delegate forwards to that one`() {
+		let owner = Owner()
+		let original = RecordingWorker()
+		owner.worker = original
+		let proxy = InterceptingProxy()
+		proxy.install(on: owner, at: \.worker)
+		let replacement = RecordingWorker()
+		owner.worker = replacement
+
+		proxy.install(on: owner, at: \.worker)
+
+		#expect(owner.worker === proxy)
+		#expect(proxy.forwardee === replacement)
+		proxy.uninstall()
+		#expect(owner.worker === replacement)
+	}
+
+	@Test
+	func `installing on another owner gives the first one back its delegate`() {
+		let first = Owner()
+		let firstWorker = RecordingWorker()
+		first.worker = firstWorker
+		let second = Owner()
+		let secondWorker = RecordingWorker()
+		second.worker = secondWorker
+		let proxy = InterceptingProxy()
+		proxy.install(on: first, at: \.worker)
+
+		proxy.install(on: second, at: \.worker)
+
+		#expect(first.worker === firstWorker)
+		#expect(second.worker === proxy)
+		#expect(proxy.forwardee === secondWorker)
+	}
+
+	@Test
+	func `uninstalling keeps a delegate the slot was given since`() {
+		let owner = Owner()
+		let original = RecordingWorker()
+		owner.worker = original
+		let proxy = InterceptingProxy()
+		proxy.install(on: owner, at: \.worker)
+		let replacement = RecordingWorker()
+		owner.worker = replacement
+
+		proxy.uninstall()
+
+		#expect(owner.worker === replacement)
 	}
 
 	@Test
@@ -128,6 +193,7 @@ private protocol WorkerBase: NSObjectProtocol {
 @objc
 private protocol Worker: WorkerBase, Sendable {
 	@objc optional func shouldStart() -> Bool
+	@objc optional func canStart() -> Bool
 	@objc optional func willStart()
 }
 
@@ -160,6 +226,10 @@ private final class RecordingWorker: NSObject, Worker, @unchecked Sendable {
 	func shouldStart() -> Bool {
 		recordedCalls.withLock { $0.append("shouldStart") }
 		return true
+	}
+
+	func canStart() -> Bool {
+		true
 	}
 
 	func willStart() {
@@ -213,3 +283,7 @@ private final class Locked<Value>: @unchecked Sendable {
 		return try body(&value)
 	}
 }
+
+private let canStart = NSSelectorFromString("canStart")
+private let willStart = NSSelectorFromString("willStart")
+private let didFinish = NSSelectorFromString("didFinish")

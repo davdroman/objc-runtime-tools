@@ -2,8 +2,6 @@ import DelegateForwarding
 import Foundation
 import Testing
 
-private let didFinish = NSSelectorFromString("didFinish")
-
 @MainActor
 struct DelegateProxyTests {
 	@Test
@@ -199,30 +197,58 @@ struct DelegateProxyTests {
 	}
 
 	@Test
-	func `uninstalling off the main actor gives the slot back on the main actor`() async {
-		let owner = Owner()
+	func `releasing off the main actor gives back a slot that doesn't retain its delegate right away`() async {
+		let owner = UnretainingOwner()
 		let original = RecordingListener()
 		owner.listener = original
 		let holder = Holder(InterceptingProxy())
 		holder.proxy?.install(on: owner, at: \.listener)
+		#expect(owner.listener !== original)
 
-		await Task.detached { holder.proxy?.uninstall() }.value
+		await Task.detached { holder.proxy = nil }.value
 
-		await waitUntil { owner.listener === original }
 		#expect(owner.listener === original)
-		#expect(holder.proxy?.forwardee == nil)
+		#expect(owner.wroteOnMainThread == false)
 	}
 
-	private func waitUntil(_ condition: () -> Bool) async {
-		for _ in 0..<100 where !condition() {
-			await Task.yield()
+	#if os(macOS)
+	@Test
+	func `uninstalling off the main actor is a programmer error`() async {
+		await #expect(processExitsWith: .failure) {
+			let (owner, holder) = await MainActor.run {
+				let owner = Owner()
+				let original = RecordingListener()
+				owner.listener = original
+				let holder = Holder(InterceptingProxy())
+				holder.proxy?.install(on: owner, at: \.listener)
+				return (owner, holder)
+			}
+			await Task.detached { holder.proxy?.uninstall() }.value
+			_ = owner
 		}
+	}
+	#endif
+
+	/// Waits up to a second for a write scheduled from another thread to reach the main actor.
+	private func waitUntil(_ condition: () -> Bool) async {
+		for _ in 0..<200 where !condition() {
+			try? await Task.sleep(nanoseconds: 5_000_000)
+		}
+	}
+}
+
+@MainActor
+private final class UnretainingOwner: NSObject {
+	private(set) var wroteOnMainThread: Bool? = nil
+
+	unowned(unsafe) var listener: (any Listener)? = nil {
+		didSet { wroteOnMainThread = Thread.isMainThread }
 	}
 }
 
 /// Hands a main-actor proxy to another thread so it can be released or uninstalled there.
 private final class Holder: @unchecked Sendable {
-	nonisolated(unsafe) var proxy: InterceptingProxy? = nil
+	var proxy: InterceptingProxy? = nil
 
 	init(_ proxy: InterceptingProxy) {
 		self.proxy = proxy
@@ -271,3 +297,5 @@ private final class RecordingListener: NSObject, Listener {
 }
 
 private final class SilentListener: NSObject, Listener {}
+
+private let didFinish = NSSelectorFromString("didFinish")

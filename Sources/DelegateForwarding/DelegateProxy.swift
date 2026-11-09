@@ -9,41 +9,39 @@ import Foundation
 /// keep its behavior:
 ///
 /// ```swift
-/// @MainActor
-/// final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControllerDelegate>,
-/// 	UIAdaptivePresentationControllerDelegate
-/// {
-/// 	var isDismissible = true
-///
-/// 	func presentationControllerShouldDismiss(_ controller: UIPresentationController) -> Bool {
-/// 		isDismissible && forwardee?.presentationControllerShouldDismiss?(controller) ?? true
+/// final class CompletionLogger: DelegateProxy<any XMLParserDelegate>, XMLParserDelegate {
+/// 	func parserDidEndDocument(_ parser: XMLParser) {
+/// 		print("Finished parsing")
+/// 		forwardee?.parserDidEndDocument?(parser)
 /// 	}
 /// }
 ///
-/// interceptor.install(on: presentationController, at: \.delegate)
+/// logger.install(on: parser, at: \.delegate)
 /// ```
 ///
-/// The proxy itself isn't isolated, so the subclass decides: a delegate called on the main actor, such as UIKit's and
-/// AppKit's, gets a `@MainActor` subclass, and a delegate called from the framework's own threads, such as
-/// `URLSessionTaskDelegate`, gets a nonisolated one that protects its own state. Delegate protocols that inherit
-/// `Sendable` need the subclass to declare `@unchecked Sendable` as well.
+/// The subclass takes the isolation of the delegate protocol. A delegate a framework calls on its own threads, like
+/// `XMLParserDelegate`, gets a nonisolated subclass that protects any state it keeps, declared `@unchecked Sendable`
+/// when the protocol inherits `Sendable`. A delegate called on the main actor, such as UIKit's and AppKit's, gets a
+/// `@MainActor` subclass.
 ///
 /// The proxy holds the replaced delegate weakly, like the slot did, so the object that owns it keeps it alive.
-/// Releasing the proxy puts the replaced delegate back unless the slot has been given another delegate since. If the
-/// replaced delegate goes away while the proxy is installed, calls the owner still makes to methods only that delegate
-/// implemented are dropped and return zero, because UIKit and AppKit decide which methods a delegate implements once,
-/// when it's assigned.
+/// Releasing the proxy puts the replaced delegate back unless the slot has been given another delegate since. The
+/// slot is written in the isolation the proxy was installed from. Released anywhere else, the proxy schedules the
+/// write there, except on a slot that doesn't retain its delegate, such as `XMLParser`'s, which is written straight
+/// away so it isn't left pointing at freed memory. A proxy installed from an actor other than the main actor always
+/// counts as released elsewhere, because it can't tell which actor it's released on.
+///
+/// If the replaced delegate goes away while the proxy is installed, calls the owner still makes to methods only that
+/// delegate implemented are dropped and return `nil`, `false` or `0`, because UIKit and AppKit decide which methods a
+/// delegate implements once, when it's assigned.
 open class DelegateProxy<Delegate>: DelegateProxyBase {
 	/// Read by the forwarding overrides, which the Objective-C runtime calls from whichever thread calls the delegate.
 	/// Written only before the proxy enters a slot and after it leaves it, so the slot's own synchronization publishes
 	/// the writes.
 	private nonisolated(unsafe) weak var forwardeeObject: AnyObject? = nil
-	/// Only touched where the slot is: in ``install(on:at:isolation:)``, ``uninstall(isolation:)`` and `deinit`.
+	/// The slot the proxy holds. Only touched where the slot is: in ``install(on:at:isolation:)``,
+	/// ``uninstall(isolation:)`` and `deinit`.
 	private nonisolated(unsafe) var installation: Installation? = nil
-
-	override public init() {
-		super.init()
-	}
 
 	/// The delegate the proxy replaced, which receives every call the proxy doesn't implement.
 	public var forwardee: Delegate? {
@@ -58,7 +56,11 @@ open class DelegateProxy<Delegate>: DelegateProxyBase {
 	///
 	/// Installing again on the same slot while the proxy still holds it does nothing, so it's safe to call from
 	/// callbacks that repeat, such as view updates. When the slot has been given another delegate since, the proxy
-	/// forwards to that one instead. Installing on a different slot first uninstalls the proxy from the current one.
+	/// forwards to that one instead. Installing on a different slot first uninstalls the proxy from the current one,
+	/// which has to happen in that slot's isolation like ``uninstall(isolation:)``.
+	///
+	/// Some owners stop accepting delegates at some point, such as a `URLSessionTask` once resumed, so a proxy
+	/// installed on one of those has to outlive that owner.
 	///
 	/// - Precondition: The proxy conforms to `Delegate`.
 	public func install<Owner: AnyObject>(
@@ -69,32 +71,30 @@ open class DelegateProxy<Delegate>: DelegateProxyBase {
 		guard let delegate = self as? Delegate else {
 			preconditionFailure("\(type(of: self)) doesn't conform to \(Delegate.self)")
 		}
-		let current = owner[keyPath: slot].map { $0 as AnyObject }
+		let installation = Installation(isolation: isolation, owner: owner, slot: slot)
+		let current = installation.currentDelegate()
 		guard current !== self else { return }
 		uninstall(isolation: isolation)
 		// UIKit and AppKit often ask a delegate which methods it implements once, when it's assigned, so the
 		// forwardee has to be in place first.
 		forwardeeObject = current
 		owner[keyPath: slot] = delegate
-		installation = Installation(isolation: isolation, forwardee: current) { [weak owner] proxy, forwardee in
-			guard let owner else { return }
-			let current = owner[keyPath: slot].map { $0 as AnyObject }
-			// Once the proxy is being released, a weak slot that held it reads nil.
-			if current == nil || current === proxy {
-				owner[keyPath: slot] = forwardee as? Delegate
-			}
-		}
+		self.installation = installation
 	}
 
 	/// Gives the slot back to the delegate the proxy replaced, unless the slot has been given another delegate since.
 	///
-	/// The slot is written in the isolation it was installed from. When called from somewhere else, the write is
-	/// scheduled on that isolation instead of happening before this returns.
+	/// - Precondition: Called in the isolation the proxy was installed from, or on the main thread for a slot
+	///   installed from the main actor.
 	public func uninstall(isolation: isolated (any Actor)? = #isolation) {
 		guard let installation else { return }
+		precondition(
+			installation.canWrite(from: isolation),
+			"\(type(of: self)) must be uninstalled in the isolation it was installed from",
+		)
 		self.installation = nil
+		installation.write(forwardeeObject, replacing: self)
 		forwardeeObject = nil
-		installation.restore(replacing: self, isReleasing: false, from: isolation)
 	}
 
 	override open func responds(to selector: Selector!) -> Bool {
@@ -107,49 +107,61 @@ open class DelegateProxy<Delegate>: DelegateProxyBase {
 	}
 
 	deinit {
-		// `deinit` runs wherever the last reference goes away, so the slot may have to be written on its isolation
-		// later, like `isolated deinit` does.
-		installation?.restore(replacing: self, isReleasing: true, from: nil)
+		guard let installation else { return }
+		// Away from the slot's isolation, the slot can still be read here, while the proxy is valid. A weak slot
+		// already reads nil, so the write can wait for its isolation.
+		if !installation.canWrite(from: nil), installation.currentDelegate() == nil {
+			nonisolated(unsafe) let forwardee = forwardeeObject
+			Task { await installation.perform { installation.write(forwardee, replacing: nil) } }
+			return
+		}
+		// On the slot's isolation, or on a slot that doesn't retain its delegate, which still holds the proxy and
+		// would point at freed memory once this returns.
+		installation.write(forwardeeObject, replacing: self)
 	}
 }
 
-/// What ``DelegateProxy`` needs to give a slot back, kept apart from the proxy so the write can outlive it.
+/// A slot a ``DelegateProxy`` holds, and how to write the replaced delegate back into it. Kept apart from the proxy so
+/// the write can outlive it.
 private final class Installation: @unchecked Sendable {
 	/// Where the slot was written from, and so where it's written again. `nil` for a slot installed outside any actor,
 	/// which is one the owner synchronizes itself.
-	let isolation: (any Actor)?
-	private weak var forwardee: AnyObject? = nil
-	private let write: (_ proxy: AnyObject?, _ forwardee: AnyObject?) -> Void
+	private let isolation: (any Actor)?
+	/// What the slot holds, or `nil` when it's empty or its owner is gone.
+	let currentDelegate: () -> AnyObject?
+	private let assign: (_ forwardee: AnyObject?) -> Void
 
-	init(
+	init<Owner: AnyObject, Delegate>(
 		isolation: (any Actor)?,
-		forwardee: AnyObject?,
-		write: @escaping (_ proxy: AnyObject?, _ forwardee: AnyObject?) -> Void,
+		owner: Owner,
+		slot: ReferenceWritableKeyPath<Owner, Delegate?>,
 	) {
 		self.isolation = isolation
-		self.forwardee = forwardee
-		self.write = write
+		currentDelegate = { [weak owner] in owner?[keyPath: slot].map { $0 as AnyObject } }
+		assign = { [weak owner] forwardee in owner?[keyPath: slot] = forwardee as? Delegate }
 	}
 
-	/// Writes the replaced delegate back on ``isolation``, right away when `current` is that isolation, or the main
-	/// thread for the main actor, and otherwise on a task hopping there.
-	///
-	/// - Parameters:
-	///   - proxy: The proxy the slot is expected to hold. A slot that doesn't retain its delegate still holds it while
-	///     it's being released.
-	///   - isReleasing: Whether `proxy` is being released, so a task scheduled here can't keep it.
-	func restore(replacing proxy: AnyObject, isReleasing: Bool, from current: (any Actor)?) {
-		guard let isolation else { return write(proxy, forwardee) }
-		if current === isolation || (isolation is MainActor && Thread.isMainThread) {
-			write(proxy, forwardee)
-		} else {
-			// A weak slot reads nil by the time the task runs, which the write accepts in place of the proxy.
-			nonisolated(unsafe) let proxy: AnyObject? = isReleasing ? nil : proxy
-			Task { await restore(replacing: proxy, on: isolation) }
-		}
+	/// Whether code running in `caller` can write the slot right away: the isolation matches, or the slot belongs to
+	/// the main actor and this is the main thread.
+	func canWrite(from caller: (any Actor)?) -> Bool {
+		guard let isolation else { return true }
+		return caller === isolation || (isolation is MainActor && Thread.isMainThread)
 	}
 
-	private func restore(replacing proxy: AnyObject?, on isolation: isolated any Actor) {
-		write(proxy, forwardee)
+	/// Writes `forwardee` when the slot holds nothing or `proxy`.
+	func write(_ forwardee: AnyObject?, replacing proxy: AnyObject?) {
+		let current = currentDelegate()
+		guard current == nil || current === proxy else { return }
+		assign(forwardee)
+	}
+
+	/// Runs `body` on ``isolation``.
+	func perform(_ body: @Sendable () -> Void) async {
+		guard let isolation else { return body() }
+		await perform(body, on: isolation)
+	}
+
+	private func perform(_ body: @Sendable () -> Void, on isolation: isolated any Actor) {
+		body()
 	}
 }

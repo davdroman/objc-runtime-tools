@@ -166,6 +166,51 @@ struct DelegateProxyTests {
 
 		#expect(owner.listener === original)
 	}
+
+	@Test
+	func `releasing the proxy off the main actor gives the slot back on the main actor`() async {
+		let owner = Owner()
+		let original = RecordingListener()
+		owner.listener = original
+		let holder = Holder(InterceptingProxy())
+		holder.proxy?.install(on: owner, at: \.listener)
+		#expect(owner.listener !== original)
+
+		await Task.detached { holder.proxy = nil }.value
+
+		await waitUntil { owner.listener === original }
+		#expect(owner.listener === original)
+	}
+
+	@Test
+	func `uninstalling off the main actor gives the slot back on the main actor`() async {
+		let owner = Owner()
+		let original = RecordingListener()
+		owner.listener = original
+		let holder = Holder(InterceptingProxy())
+		holder.proxy?.install(on: owner, at: \.listener)
+
+		await Task.detached { holder.proxy?.uninstall() }.value
+
+		await waitUntil { owner.listener === original }
+		#expect(owner.listener === original)
+		#expect(holder.proxy?.forwardee == nil)
+	}
+
+	private func waitUntil(_ condition: () -> Bool) async {
+		for _ in 0..<100 where !condition() {
+			await Task.yield()
+		}
+	}
+}
+
+/// Hands a main-actor proxy to another thread so it can be released or uninstalled there.
+private final class Holder: @unchecked Sendable {
+	nonisolated(unsafe) var proxy: InterceptingProxy? = nil
+
+	init(_ proxy: InterceptingProxy) {
+		self.proxy = proxy
+	}
 }
 
 @MainActor

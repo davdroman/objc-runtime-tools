@@ -49,6 +49,7 @@ Subclass `DelegateProxy` to take over an object's delegate slot without replacin
 This is useful when a framework owns a delegate you can't replace, such as the presentation controller delegate SwiftUI sets for a sheet:
 
 ```swift
+@MainActor
 final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControllerDelegate>,
     UIAdaptivePresentationControllerDelegate
 {
@@ -62,7 +63,22 @@ final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControll
 interceptor.install(on: presentationController, at: \.delegate)
 ```
 
-Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat. `DelegateProxy` is isolated to the main actor.
+Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat.
+
+`DelegateProxy` itself isn't isolated: the subclass takes the isolation of the delegate protocol. Delegates UIKit and AppKit call on the main actor get a `@MainActor` subclass, and delegates a framework calls from its own threads, such as `XMLParserDelegate` or `URLSessionTaskDelegate`, get a nonisolated subclass that protects its own state. When the delegate protocol inherits `Sendable`, as `URLSessionTaskDelegate` does, declare the subclass `@unchecked Sendable` too:
+
+```swift
+final class CompletionObserver: DelegateProxy<any URLSessionTaskDelegate>, URLSessionTaskDelegate, @unchecked Sendable {
+    let completions = Mutex(0)
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
+        completions.withLock { $0 += 1 }
+        forwardee?.urlSession?(session, task: task, didCompleteWithError: error)
+    }
+}
+```
+
+The proxy gives the slot back in the isolation it was installed from. Releasing or uninstalling it from somewhere else schedules that write on the right actor instead of performing it immediately. Some owners stop accepting delegates at some point, such as a `URLSessionTask` once resumed, so a proxy on one of those has to outlive it.
 
 ### Swizzling
 

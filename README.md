@@ -10,6 +10,7 @@ ObjCRuntimeTools is a Swift library that provides powerful tools for working wit
 ## Features
 
 - **Property Association**: easily associate properties with Objective-C objects using the `@Associated` macro.
+- **Delegate Forwarding**: intercept some of an object's delegate calls while its existing delegate keeps receiving the rest, with `DelegateProxy`.
 - **Swizzling**: perform type-safe and boilerplate-free runtime swizzling with the `#swizzle` macro.
 
 ## Installation
@@ -40,6 +41,28 @@ extension MyClass {
     var associatedProperty: String = "Default Value"
 }
 ```
+
+### Delegate Forwarding
+
+Subclass `DelegateProxy` to take over an object's delegate slot without replacing its delegate. The proxy handles the methods it implements and forwards every other call to the delegate it replaced, which stays in place when the proxy is released.
+
+This is useful when a framework owns a delegate you can't replace, such as the presentation controller delegate SwiftUI sets for a sheet:
+
+```swift
+final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControllerDelegate>,
+    UIAdaptivePresentationControllerDelegate
+{
+    var isDismissible = true
+
+    func presentationControllerShouldDismiss(_ controller: UIPresentationController) -> Bool {
+        isDismissible && forwardee?.presentationControllerShouldDismiss?(controller) ?? true
+    }
+}
+
+interceptor.install(on: presentationController, at: \.delegate)
+```
+
+Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat. `DelegateProxy` is isolated to the main actor.
 
 ### Swizzling
 

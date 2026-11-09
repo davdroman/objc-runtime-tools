@@ -23,6 +23,13 @@
     {
       "target" : {
         "containerPath" : "container:",
+        "identifier" : "DelegateForwardingTests",
+        "name" : "DelegateForwardingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
         "identifier" : "SwizzlingTests",
         "name" : "SwizzlingTests"
       }

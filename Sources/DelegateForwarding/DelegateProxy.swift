@@ -111,8 +111,8 @@ open class DelegateProxy<Delegate>: DelegateProxyBase {
 		// Away from the slot's isolation, the slot can still be read here, while the proxy is valid. A weak slot
 		// already reads nil, so the write can wait for its isolation.
 		if !installation.canWrite(from: nil), installation.currentDelegate() == nil {
-			nonisolated(unsafe) let forwardee = forwardeeObject
-			Task { await installation.perform { installation.write(forwardee, replacing: nil) } }
+			let forwardee = WeakReference(forwardeeObject)
+			Task { await installation.perform { installation.write(forwardee.object, replacing: nil) } }
 			return
 		}
 		// On the slot's isolation, or on a slot that doesn't retain its delegate, which still holds the proxy and
@@ -163,5 +163,14 @@ private final class Installation: @unchecked Sendable {
 
 	private func perform(_ body: @Sendable () -> Void, on isolation: isolated any Actor) {
 		body()
+	}
+}
+
+/// Carries the replaced delegate into the write a release schedules, without keeping it alive until then.
+private struct WeakReference: @unchecked Sendable {
+	weak var object: AnyObject? = nil
+
+	init(_ object: AnyObject?) {
+		self.object = object
 	}
 }

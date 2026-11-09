@@ -21,6 +21,7 @@ let package = Package(
 			name: "ObjCRuntimeTools",
 			dependencies: [
 				"Association",
+				"DelegateForwarding",
 				"Swizzling",
 			],
 		),
@@ -51,6 +52,19 @@ package.targets += [
 			.product(name: "MacroTesting", package: "swift-macro-testing"),
 		],
 	),
+]
+
+// MARK: DelegateForwarding
+
+package.products += [
+	.library(name: "DelegateForwarding", targets: ["DelegateForwarding"]),
+]
+
+package.targets += [
+	.target(name: "DelegateForwarding", dependencies: ["DelegateForwardingObjC"]),
+	.target(name: "DelegateForwardingObjC"),
+
+	.testTarget(name: "DelegateForwardingTests", dependencies: ["DelegateForwarding"]),
 ]
 
 // MARK: Swizzling

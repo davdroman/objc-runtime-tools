@@ -1,4 +1,4 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [ObjCRuntimeTools, Association, Swizzling]
+    - documentation_targets: [ObjCRuntimeTools, Association, DelegateForwarding, Swizzling]

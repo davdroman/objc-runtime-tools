@@ -5,11 +5,12 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fdavdroman%2Fobjc-runtime-tools%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/davdroman/objc-runtime-tools)
 [![](https://img.shields.io/badge/Documentation-gray?logo=swift&logoColor=white)](https://swiftpackageindex.com/davdroman/objc-runtime-tools/main/documentation/objcruntimetools)
 
-ObjCRuntimeTools is a Swift library that provides powerful tools for working with Objective-C runtime features, including property association and method swizzling. It leverages modern Swift macros to simplify and enhance the use of these runtime capabilities.
+ObjCRuntimeTools is a Swift library that provides powerful tools for working with Objective-C runtime features, including property association, delegate forwarding and method swizzling. It leverages modern Swift macros to simplify and enhance the use of these runtime capabilities.
 
 ## Features
 
 - **Property Association**: easily associate properties with Objective-C objects using the `@Associated` macro.
+- **Delegate Forwarding**: intercept some of an object's delegate calls while its existing delegate keeps receiving the rest, with `DelegateProxy`.
 - **Swizzling**: perform type-safe and boilerplate-free runtime swizzling with the `#swizzle` macro.
 
 ## Installation
@@ -40,6 +41,27 @@ extension MyClass {
     var associatedProperty: String = "Default Value"
 }
 ```
+
+### Delegate Forwarding
+
+Subclass `DelegateProxy` to intercept some of an object's delegate calls while the delegate it replaced keeps receiving the rest. This is useful when a framework owns a delegate you can't replace, such as the presentation controller delegate SwiftUI sets for a sheet:
+
+```swift
+@MainActor
+final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControllerDelegate>,
+    UIAdaptivePresentationControllerDelegate
+{
+    var isDismissible = true
+
+    func presentationControllerShouldDismiss(_ controller: UIPresentationController) -> Bool {
+        isDismissible && forwardee?.presentationControllerShouldDismiss?(controller) ?? true
+    }
+}
+
+interceptor.install(on: presentationController, at: \.delegate)
+```
+
+[`DelegateProxy`'s documentation](https://swiftpackageindex.com/davdroman/objc-runtime-tools/main/documentation/delegateforwarding/delegateproxy) covers delegates called off the main actor and what happens when the proxy is released.
 
 ### Swizzling
 

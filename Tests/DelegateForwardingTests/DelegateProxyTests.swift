@@ -51,6 +51,22 @@ struct DelegateProxyTests {
 	}
 
 	@Test
+	func `a call for a replaced delegate that's gone is dropped`() {
+		let owner = Owner()
+		var original: RecordingListener? = RecordingListener()
+		owner.listener = original
+		let proxy = InterceptingProxy()
+		proxy.install(on: owner, at: \.listener)
+		#expect(owner.listenerRespondedToDidFinishOnAssignment == true)
+
+		original = nil
+
+		// UIKit keeps calling what the delegate responded to when it was assigned.
+		#expect(proxy.perform(didFinish) == nil)
+		#expect(proxy.responds(to: didFinish) == false)
+	}
+
+	@Test
 	func `a method neither delegate implements isn't reported`() throws {
 		let owner = Owner()
 		let original = SilentListener()

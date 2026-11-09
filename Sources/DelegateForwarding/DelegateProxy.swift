@@ -1,4 +1,5 @@
-public import Foundation
+public import DelegateForwardingObjC
+import Foundation
 
 /// A delegate that takes an object's delegate slot and forwards every call it doesn't handle itself to the delegate
 /// it replaced.
@@ -28,8 +29,11 @@ public import Foundation
 /// `Sendable` need the subclass to declare `@unchecked Sendable` as well.
 ///
 /// The proxy holds the replaced delegate weakly, like the slot did, so the object that owns it keeps it alive.
-/// Releasing the proxy puts the replaced delegate back unless the slot has been given another delegate since.
-open class DelegateProxy<Delegate>: NSObject {
+/// Releasing the proxy puts the replaced delegate back unless the slot has been given another delegate since. If the
+/// replaced delegate goes away while the proxy is installed, calls the owner still makes to methods only that delegate
+/// implemented are dropped and return zero, because UIKit and AppKit decide which methods a delegate implements once,
+/// when it's assigned.
+open class DelegateProxy<Delegate>: DelegateProxyBase {
 	/// Read by the forwarding overrides, which the Objective-C runtime calls from whichever thread calls the delegate.
 	/// Written only before the proxy enters a slot and after it leaves it, so the slot's own synchronization publishes
 	/// the writes.

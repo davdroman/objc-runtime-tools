@@ -2,6 +2,7 @@ import DelegateForwarding
 import Foundation
 import Testing
 
+private let willStart = NSSelectorFromString("willStart")
 private let didFinish = NSSelectorFromString("didFinish")
 
 /// A proxy for a delegate the framework calls on its own threads, like `URLSessionDelegate`, installed and released
@@ -38,6 +39,20 @@ struct NonisolatedDelegateProxyTests {
 
 		#expect(proxy.calls == ["shouldStart", "shouldStart"])
 		#expect(original.calls == ["shouldStart"])
+	}
+
+	@Test
+	func `calls for a replaced delegate that's gone are dropped, including inherited protocol methods`() {
+		let owner = Owner()
+		var original: RecordingWorker? = RecordingWorker()
+		owner.worker = original
+		let proxy = InterceptingProxy()
+		proxy.install(on: owner, at: \.worker)
+
+		original = nil
+
+		#expect(proxy.perform(willStart) == nil)
+		#expect(proxy.perform(didFinish) == nil)
 	}
 
 	@Test
@@ -104,10 +119,16 @@ struct NonisolatedDelegateProxyTests {
 	}
 }
 
+/// `didFinish` lives on a parent protocol, like `UITableViewDelegate` inherits `UIScrollViewDelegate`'s methods.
 @objc
-private protocol Worker: NSObjectProtocol, Sendable {
-	@objc optional func shouldStart() -> Bool
+private protocol WorkerBase: NSObjectProtocol {
 	@objc optional func didFinish()
+}
+
+@objc
+private protocol Worker: WorkerBase, Sendable {
+	@objc optional func shouldStart() -> Bool
+	@objc optional func willStart()
 }
 
 private final class Owner: NSObject {
@@ -139,6 +160,10 @@ private final class RecordingWorker: NSObject, Worker, @unchecked Sendable {
 	func shouldStart() -> Bool {
 		recordedCalls.withLock { $0.append("shouldStart") }
 		return true
+	}
+
+	func willStart() {
+		recordedCalls.withLock { $0.append("willStart") }
 	}
 
 	func didFinish() {

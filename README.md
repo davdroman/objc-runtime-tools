@@ -63,7 +63,7 @@ final class DismissInterceptor: DelegateProxy<any UIAdaptivePresentationControll
 interceptor.install(on: presentationController, at: \.delegate)
 ```
 
-Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat.
+Methods the proxy implements replace the original delegate's, so call through `forwardee` to keep its behavior. Installing again on the slot the proxy already holds does nothing, so it's safe to call from callbacks that repeat. If the replaced delegate goes away while the proxy is installed, calls the owner still makes to methods only that delegate implemented are dropped instead of raising, since UIKit and AppKit decide which methods a delegate implements once, when it's assigned.
 
 `DelegateProxy` itself isn't isolated: the subclass takes the isolation of the delegate protocol. Delegates UIKit and AppKit call on the main actor get a `@MainActor` subclass, and delegates a framework calls from its own threads, such as `XMLParserDelegate` or `URLSessionTaskDelegate`, get a nonisolated subclass that protects its own state. When the delegate protocol inherits `Sendable`, as `URLSessionTaskDelegate` does, declare the subclass `@unchecked Sendable` too:
 

@@ -61,7 +61,8 @@ package.products += [
 ]
 
 package.targets += [
-	.target(name: "DelegateForwarding"),
+	.target(name: "DelegateForwarding", dependencies: ["DelegateForwardingObjC"]),
+	.target(name: "DelegateForwardingObjC"),
 
 	.testTarget(name: "DelegateForwardingTests", dependencies: ["DelegateForwarding"]),
 ]
